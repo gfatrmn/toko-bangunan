@@ -1,28 +1,57 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Toko Bahan Bangunan')</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #eaf8ff; scroll-behavior: smooth; }
-        /* Pindahkan CSS dari index.php native Anda ke sini */
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@yield('title', 'BuildNest - Toko Bahan Bangunan')</title>
+  <meta name="description" content="@yield('meta_description', 'Toko bahan bangunan online terpercaya. Produk lengkap, pengiriman cepat.')">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Poppins', sans-serif; background-color: #eaf8ff; scroll-behavior: smooth; }
+    .navbar { padding: 0.8rem 0; }
+    .navbar-brand { color: #004aad !important; }
+    .search-container { width: 100%; margin-top: 10px; }
+    @media (min-width: 992px) { .search-container { width: 30%; margin-top: 0; } }
+    .nav-custom-btn { font-weight:500; color:#555 !important; padding:10px 20px !important; border-radius:12px; transition:all 0.3s; margin:0 3px; display:flex; align-items:center; }
+    .nav-custom-btn:hover { background-color:rgba(0,74,173,0.08); color:#004aad !important; }
+    .nav-custom-btn.active { background-color:#004aad; color:#fff !important; box-shadow:0 4px 10px rgba(0,74,173,0.2); }
+    .user-profile-badge { background:#fff; border:1px solid #e0e0e0; border-radius:25px; padding:6px 18px; display:inline-flex; align-items:center; }
+    .btn-logout { background-color:#dc3545; color:#fff !important; border-radius:20px; font-weight:600; padding:8px 25px; border:none; transition:all 0.3s; }
+    .btn-logout:hover { background-color:#bb2d3b !important; }
+    .auth-buttons { display:flex; }
+    @media (max-width: 991px) {
+      .navbar-collapse { text-align:center; padding:20px 0; }
+      .navbar-nav { align-items:center !important; }
+      .nav-item { width:100%; display:flex; justify-content:center; margin-bottom:10px; }
+      .nav-custom-btn { width:85%; justify-content:center; }
+      .auth-buttons { flex-direction:column; width:85%; margin:0 auto; gap:12px; }
+      .auth-buttons .btn { width:100%; padding:12px !important; }
+    }
+  </style>
+
+  @stack('styles')
 </head>
 <body>
-    @include('layouts.header')
-    
+
+  @include('layouts.header')
+
+  <div class="container-fluid px-0">
     @yield('content')
+  </div>
 
-    @include('layouts.footer')
+  @include('layouts.footer')
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-    @stack('scripts')
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script>AOS.init({ duration: 1000, once: true });</script>
+
+  @stack('scripts')
 </body>
 </html>

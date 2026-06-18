@@ -3,17 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
+use Illuminate\Http\Request;
 
 class ProdukController extends Controller
 {
-public function index()
-{
-    // Pastikan ini mengambil data dari database
-    $unggulan = \App\Models\Produk::with('kategori')->orderBy('stok', 'asc')->limit(10)->get();
-    
-    // Pastikan $kategoris juga dikirim agar tidak error di bagian filter
-    $kategoris = \App\Models\Kategori::all();
+    // Dipanggil via AJAX dari halaman beranda
+    public function filter(Request $request)
+    {
+        $kategori = $request->input('kategori', 'all');
+        $search   = $request->input('search', '');
 
-    return view('index', compact('unggulan', 'kategoris'));
-}
+        $query = Produk::with('kategori');
+
+        if ($kategori !== 'all') {
+            $query->whereHas('kategori', fn($q) => $q->where('nama', $kategori));
+        }
+
+        if ($search) {
+            $query->where('nama', 'like', "%{$search}%");
+        }
+
+        $produk = $query->get();
+
+        // Return HTML partial (bukan full page)
+        return view('partials.produk-list', compact('produk'));
+    }
+
+    public function show($id)
+    {
+        $produk = Produk::with('kategori')->findOrFail($id);
+        $serupa = Produk::where('kategori', $produk->kategori)
+                        ->where('id', '!=', $id)
+                        ->inRandomOrder()
+                        ->limit(4)
+                        ->get();
+
+        return view('produk.show', compact('produk', 'serupa'));
+    }
 }
