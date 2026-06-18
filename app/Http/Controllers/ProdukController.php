@@ -6,12 +6,14 @@ use App\Models\Produk;
 
 class ProdukController extends Controller
 {
-    public function index()
-    {
-        // Mengambil data dengan Eager Loading agar tidak terjadi N+1 problem
-        $produk = Produk::with('kategori')->get();
-        
-        // Return view yang akan kita buat
-        return view('produk.index', compact('produk'));
-    }
+public function index()
+{
+    // Pastikan ini mengambil data dari database
+    $unggulan = \App\Models\Produk::with('kategori')->orderBy('stok', 'asc')->limit(10)->get();
+    
+    // Pastikan $kategoris juga dikirim agar tidak error di bagian filter
+    $kategoris = \App\Models\Kategori::all();
+
+    return view('index', compact('unggulan', 'kategoris'));
+}
 }
