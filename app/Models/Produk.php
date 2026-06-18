@@ -6,11 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Produk extends Model
 {
-    protected $table = 'produk'; // Nama tabel di MySQL
-    public $timestamps = false;  // Karena di SQL lama Anda tidak ada created_at/updated_at
+    protected $table = 'produk';
 
-    // Definisikan relasi ke kategori
-    public function kategori() {
+    protected $fillable = [
+        'kategori', 'nama', 'deskripsi', 'harga',
+        'stok', 'gambar', 'satuan', 'min_pembelian',
+        'berat', 'merek'
+    ];
+
+    // Produk ini milik SATU kategori
+    public function kategori()
+    {
         return $this->belongsTo(Kategori::class, 'kategori');
+    }
+
+    // Produk ini ada di BANYAK keranjang
+    public function keranjang()
+    {
+        return $this->hasMany(Keranjang::class, 'produk_id');
     }
 }

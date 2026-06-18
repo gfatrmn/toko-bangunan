@@ -22,4 +22,17 @@ class User extends Authenticatable
     {
         return $this->kata_sandi;
     }
+    public function pemesanan()
+    {
+        return $this->hasMany(Pemesanan::class);
+    }
+    public function keranjang()
+    {
+        return $this->hasMany(Keranjang::class);
+    }
+    // Helper: cek apakah user adalah admin
+    public function isAdmin()
+    {
+        return $this->nama_role === 'admin';
+    }
 }

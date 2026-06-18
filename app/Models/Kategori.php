@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Kategori extends Model
 {
     protected $table = 'kategori';
-    public $timestamps = false;
 
-    // Relasi: Satu kategori punya banyak produk
+    protected $fillable = ['nama'];
+
+    // Satu kategori punya BANYAK produk
     public function produk()
     {
         return $this->hasMany(Produk::class, 'kategori');

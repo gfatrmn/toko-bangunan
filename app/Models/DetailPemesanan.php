@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class DetailPemesanan extends Model
 {
     protected $table = 'detail_pemesanan';
-    public $timestamps = false;
+    public $timestamps = false; // tabel ini tidak punya created_at/updated_at
 
-    // Relasi: Detail ini milik satu pemesanan
+    protected $fillable = ['pemesanan_id', 'produk_id', 'jumlah', 'harga'];
+
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class, 'pemesanan_id');
     }
 
-    // Relasi: Detail ini merujuk ke satu produk
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'produk_id');
