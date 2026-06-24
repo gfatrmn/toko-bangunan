@@ -41,9 +41,7 @@
 
   @include('layouts.header')
 
-  <div class="container-fluid px-0">
-    @yield('content')
-  </div>
+  @yield('content')
 
   @include('layouts.footer')
 

@@ -13,11 +13,9 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     protected $table = 'users';
-
     protected $fillable = [
         'nama', 'email', 'kata_sandi', 'no_telepon', 'nama_role', 'nama_perusahaan', 'jenis_perusahaan'
     ];
-
     public function getAuthPassword()
     {
         return $this->kata_sandi;
