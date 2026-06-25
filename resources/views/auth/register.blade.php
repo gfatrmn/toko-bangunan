@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
 @section('title', 'Daftar - BuildNest')
 
@@ -7,9 +7,9 @@
   .register-section { min-height: 100vh; }
 
   .form-container {
-    max-width: 480px;
+    max-width: 460px;
     width: 100%;
-    padding: 40px 30px;
+    padding: 24px 30px;
   }
 
   .bg-register {
@@ -45,8 +45,25 @@
 
   #form-kontraktor { display: none; }
 
+  .btn-primary { background-color: #004aad; border: none; }
+
+  .form-container h4 { margin-bottom: 2px; }
+  .form-container > p { margin-bottom: 16px; font-size: 0.92rem; }
+
+  .form-container .mb-3 { margin-bottom: 0.85rem !important; }
+  .form-container .form-label { margin-bottom: 0.25rem; font-size: 0.92rem; }
+  .form-container .form-control { padding: 0.45rem 0.75rem; font-size: 0.92rem; }
+
+  .form-container .btn-primary { padding: 0.5rem 0; margin-top: 0.4rem !important; }
+  .form-container .alert { padding: 0.5rem 0.75rem; font-size: 0.88rem; margin-bottom: 0.75rem; }
+
   @media (max-width: 991px) {
     .desktop-image-col { display: none !important; }
+    .form-container { max-width: 100%; padding: 1.25rem 1.25rem; }
+  }
+
+  @media (max-height: 700px) {
+    .form-container { padding-top: 14px; padding-bottom: 14px; }
   }
 </style>
 @endpush
@@ -56,12 +73,11 @@
   <div class="row g-0 register-section">
 
     {{-- Kolom Form --}}
-    <div class="col-12 col-lg-6 bg-register d-flex align-items-center justify-content-center py-5">
+    <div class="col-12 col-lg-6 bg-register d-flex align-items-center justify-content-center py-4">
       <div class="form-container">
         <h4 class="mb-1 fw-bold text-primary">Buat Akun Baru</h4>
         <p class="text-dark mb-3">Bergabung sekarang dan nikmati kemudahan berbelanja bahan bangunan.</p>
 
-        {{-- Error --}}
         @if($errors->any())
           <div class="alert alert-danger py-2">
             <ul class="mb-0 ps-3">
@@ -75,14 +91,13 @@
         <form method="POST" action="{{ route('register.post') }}">
           @csrf
 
-          {{-- Pilih Role --}}
           <div class="mb-3">
             <label class="form-label fw-semibold">Daftar Sebagai</label>
             <div class="d-flex gap-3">
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="nama_role"
                        id="role_pengguna" value="pengguna"
-                       {{ old('nama_role', request('tipe')) === 'pengguna' ? 'checked' : '' }}
+                       {{ old('nama_role', request('tipe', 'pengguna')) === 'pengguna' ? 'checked' : '' }}
                        onchange="toggleKontraktor(false)">
                 <label class="form-check-label" for="role_pengguna">Pengguna</label>
               </div>
@@ -126,7 +141,6 @@
                    id="kata_sandi_confirmation" class="form-control" required>
           </div>
 
-          {{-- Field khusus Kontraktor --}}
           <div id="form-kontraktor">
             <div class="mb-3">
               <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
@@ -146,9 +160,7 @@
 
         <p class="text-center mt-3 text-dark mb-0">
           Sudah punya akun?
-          <a href="{{ route('login') }}" class="fw-bold text-primary text-decoration-underline">
-            Masuk
-          </a>
+          <a href="{{ route('login') }}" class="fw-bold text-primary text-decoration-underline">Masuk</a>
         </p>
       </div>
     </div>
@@ -172,10 +184,8 @@
     document.getElementById('form-kontraktor').style.display = show ? 'block' : 'none';
   }
 
-  // Cek state awal saat halaman load
   document.addEventListener('DOMContentLoaded', function () {
-    const kontraktorChecked = document.getElementById('role_kontraktor').checked;
-    toggleKontraktor(kontraktorChecked);
+    toggleKontraktor(document.getElementById('role_kontraktor').checked);
   });
 </script>
 @endpush
