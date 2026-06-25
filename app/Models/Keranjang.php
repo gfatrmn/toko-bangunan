@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Keranjang extends Model
 {
     protected $table = 'keranjang';
+    public $timestamps = false; // tabel keranjang tidak punya created_at/updated_at
+
 
     protected $fillable = ['user_id', 'produk_id', 'jumlah'];
 
