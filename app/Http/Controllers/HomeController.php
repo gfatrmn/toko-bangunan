@@ -13,7 +13,7 @@ class HomeController extends Controller
         // SELECT produk.*, kategori.nama AS kategori_nama
         // FROM produk LEFT JOIN kategori ON produk.kategori = kategori.id
         // ORDER BY stok ASC LIMIT 10
-        $unggulan = Produk::with('kategori')
+        $unggulan = Produk::with('kategoriRelasi')
                           ->orderBy('stok', 'asc')
                           ->limit(10)
                           ->get();

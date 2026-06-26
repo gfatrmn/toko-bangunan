@@ -13,10 +13,10 @@ class ProdukController extends Controller
         $kategori = $request->input('kategori', 'all');
         $search   = $request->input('search', '');
 
-        $query = Produk::with('kategori');
+        $query = Produk::with('kategoriRelasi');
 
         if ($kategori !== 'all') {
-            $query->whereHas('kategori', fn($q) => $q->where('nama', $kategori));
+            $query->whereHas('kategoriRelasi', fn($q) => $q->where('nama', $kategori));
         }
 
         if ($search) {
@@ -31,7 +31,7 @@ class ProdukController extends Controller
 
     public function show($id)
     {
-        $produk = Produk::with('kategori')->findOrFail($id);
+        $produk = Produk::with('kategoriRelasi')->findOrFail($id);
         $serupa = Produk::where('kategori', $produk->kategori)
                         ->where('id', '!=', $id)
                         ->inRandomOrder()

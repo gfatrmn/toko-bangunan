@@ -15,7 +15,7 @@ class Produk extends Model
     ];
 
     // Produk ini milik SATU kategori
-    public function kategori()
+    public function kategoriRelasi()
     {
         return $this->belongsTo(Kategori::class, 'kategori');
     }
