@@ -90,11 +90,16 @@ class KeranjangController extends Controller
                           ->get()
                           ->sum(fn($i) => $i->produk->harga * $i->jumlah);
 
+        // Hitung total jumlah item (semua qty)
+        $totalItems = Keranjang::where('user_id', $user_id)
+                               ->sum('jumlah');
+
         return response()->json([
             'success'      => true,
             'jumlah_final' => $jumlah,
             'subtotal'     => $jumlah * $item->produk->harga,
             'total'        => $total,
+            'total_items'  => $totalItems,
         ]);
     }
 
