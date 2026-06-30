@@ -34,6 +34,10 @@ Route::middleware('auth.session')->group(function () {
     Route::get('/riwayat',           [PemesananController::class, 'index'])->name('riwayat.index');
     Route::get('/riwayat/{id}',      [PemesananController::class, 'show'])->name('pemesanan.show');
 
+    // Pembayaran
+    Route::get('/pembayaran/{id}',   [App\Http\Controllers\PembayaranController::class, 'index'])->name('pembayaran.index');
+    Route::post('/pembayaran/{id}',  [App\Http\Controllers\PembayaranController::class, 'upload'])->name('pembayaran.upload');
+
 });
 
 // ─── Admin (wajib login & role admin) ─────────────────────────
