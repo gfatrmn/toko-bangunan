@@ -23,24 +23,24 @@
     z-index: 1;
     pointer-events: none;
   }
-  .carousel-inner img { 
-    height: 60vh; 
-    object-fit: cover; 
+  .carousel-inner img {
+    height: 60vh;
+    object-fit: cover;
     transition: transform 12s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .carousel-item.active img {
     transform: scale(1.04);
   }
-  .carousel-caption.teks { 
-    padding: 0; 
-    opacity: 0; 
-    animation: fadeInUp 1s 0.3s forwards; 
-    top: 50%; 
+  .carousel-caption.teks {
+    padding: 0;
+    opacity: 0;
+    animation: fadeInUp 1s 0.3s forwards;
+    top: 50%;
     left: 50%;
     right: auto;
-    bottom: auto; 
+    bottom: auto;
     width: 75%;
-    transform: translate(-50%, -50%); 
+    transform: translate(-50%, -50%);
     background: transparent !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
@@ -73,7 +73,7 @@
     margin-top: 1rem;
     margin-bottom: 2rem !important;
   }
-  
+
   .carousel-control-prev, .carousel-control-next {
     width: 6%;
   }
@@ -118,28 +118,48 @@
   }
 
   /* Product Card Styling */
-  .card { 
-    overflow: hidden; 
-    border-radius: 1.25rem; 
-    border: 1px solid rgba(0, 0, 0, 0.04); 
+  .card {
+    overflow: hidden;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.04);
     background: #ffffff;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02); 
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
     position: relative;
   }
-  .card:hover { 
-    transform: translateY(-8px); 
-    box-shadow: 0 20px 35px rgba(0, 74, 173, 0.08); 
-    border-color: rgba(0, 74, 173, 0.1);
+  .card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 35px rgba(0, 74, 173, 0.12);
+    border-color: rgba(0, 74, 173, 0.25);
   }
-  .product-card-img { 
-    height: 220px; 
-    object-fit: cover; 
-    border-radius: 1.25rem 1.25rem 0 0; 
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
+  /* Fix hover visibility for unggulan cards inside Swiper */
+  .card-unggulan {
+    background: #ffffff;
+    z-index: 1;
   }
-  .card:hover .product-card-img { 
-    transform: scale(1.06); 
+  .card-unggulan:hover {
+    background: #ffffff !important;
+    border-color: #004aad !important;
+  }
+  .card-unggulan:hover .card-title,
+  .card-unggulan:hover .product-kategori,
+  .card-unggulan:hover .product-price {
+    color: inherit !important;
+    opacity: 1 !important;
+  }
+  .card-unggulan:hover .btn-outline-primary {
+    background: linear-gradient(135deg, #004aad, #0066f2);
+    color: white !important;
+    border-color: transparent;
+  }
+  .product-card-img {
+    height: 220px;
+    object-fit: cover;
+    border-radius: 1.25rem 1.25rem 0 0;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card:hover .product-card-img {
+    transform: scale(1.06);
   }
   .card-body {
     padding: 1.25rem;
@@ -205,17 +225,17 @@
   }
 
   /* Project/Delivery Gallery Card */
-  .project-card { 
-    border-radius: 1.25rem; 
-    overflow: hidden; 
-    height: 350px; 
+  .project-card {
+    border-radius: 1.25rem;
+    overflow: hidden;
+    height: 350px;
     border: none;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
   }
-  .project-card img { 
-    height: 100%; 
-    object-fit: cover; 
+  .project-card img {
+    height: 100%;
+    object-fit: cover;
     transition: transform 0.6s ease;
   }
   .project-card:hover {
@@ -225,28 +245,28 @@
   .project-card:hover img {
     transform: scale(1.06);
   }
-  .cb { 
-    background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.3) 70%, transparent 100%); 
-    color: white; 
-    position: absolute; 
-    bottom: 0; 
-    width: 100%; 
-    padding: 2.5rem 1.5rem 1.5rem; 
+  .cb {
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.3) 70%, transparent 100%);
+    color: white;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 2.5rem 1.5rem 1.5rem;
     transition: all 0.3s;
   }
 
   /* Brand Logos Partner */
-  .brand-logos { 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    flex-wrap: wrap; 
-    gap: 40px; 
-    margin-top: 30px; 
+  .brand-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-top: 30px;
   }
-  .brand-logos img { 
-    max-height: 55px; 
-    object-fit: contain; 
+  .brand-logos img {
+    max-height: 55px;
+    object-fit: contain;
     filter: grayscale(100%) opacity(50%);
     transition: all 0.4s ease;
   }
@@ -283,13 +303,13 @@
     flex-direction: column;
     justify-content: space-between;
   }
-  .cta-img { 
-    position: absolute; 
+  .cta-img {
+    position: absolute;
     inset: 0;
-    height: 100%; 
-    width: 100%; 
-    object-fit: cover; 
-    z-index: 0; 
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    z-index: 0;
     transition: transform 0.6s ease;
   }
   .cta-box:hover .cta-img {
@@ -297,7 +317,7 @@
   }
   .highlight-primary { color: #38bdf8; }
   .highlight-secondary { color: #fbbf24; }
-  
+
   .btn-cta {
     background: #ffffff;
     color: #004aad;
@@ -339,26 +359,26 @@
     background-color: rgba(0, 74, 173, 0.03);
     color: #004aad;
   }
-  
+
   .spinner-border { color:#004aad; }
   .fade-in { animation:fadeIn 0.5s ease-in; }
-  
-  @keyframes fadeInUp { 
-    from { opacity: 0; transform: translate(-50%, calc(-50% + 30px)); } 
-    to { opacity: 1; transform: translate(-50%, -50%); } 
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translate(-50%, calc(-50% + 30px)); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
   }
-  @keyframes fadeIn { 
-    from { opacity: 0; } 
-    to { opacity: 1; } 
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   @media (max-width: 992px) {
     .carousel-inner img { height: 45vh; }
-    .carousel-caption.teks { 
+    .carousel-caption.teks {
       width: 85%;
       left: 50%;
-      top: 50% !important; 
-      transform: translate(-50%, -50%) !important; 
+      top: 50% !important;
+      transform: translate(-50%, -50%) !important;
       background: transparent !important;
       backdrop-filter: none !important;
       border: none !important;
@@ -371,7 +391,7 @@
   }
   @media (max-width: 576px) {
     .carousel-inner img { height: 38vh; }
-    .carousel-caption.teks { 
+    .carousel-caption.teks {
       width: 90%;
       left: 50%;
     }
@@ -431,8 +451,8 @@
     <div class="swiper unggulan-swiper px-2">
       <div class="swiper-wrapper">
         @foreach($unggulan as $row)
-        <div class="swiper-slide py-3" data-aos="zoom-in">
-          <div class="card w-100 h-100">
+            <div class="swiper-slide py-3">
+              <div class="card w-100 h-100 card-unggulan">
             <img src="{{ asset('sources/' . ($row->gambar ?? 'default.jpg')) }}"
                  class="product-card-img" alt="{{ $row->nama }}">
             <div class="card-body d-flex flex-column justify-content-between">
@@ -454,7 +474,7 @@
 
   {{-- Semua Produk --}}
   <div id="semua_produk" style="scroll-margin-top: 100px;"></div>
-  
+
   <div class="section-title-wrapper text-center mt-5" data-aos="fade-up">
     <span class="section-badge">Katalog Lengkap</span>
     <h3 class="section-title">
@@ -560,7 +580,7 @@
       <h3 class="section-title">Pertanyaan Umum (FAQ)</h3>
       <p class="section-subtitle">Temukan jawaban atas pertanyaan yang paling sering diajukan mengenai layanan kami.</p>
     </div>
-    
+
     <div class="accordion mx-auto" id="faqAccordion" style="max-width: 800px;">
       @foreach([
         ['faq1', 'Mengapa saya harus membeli bahan material bangunan di BuildNest?',
@@ -594,7 +614,7 @@
 <script>
 // Swiper Initialization for Featured Products
 new Swiper('.unggulan-swiper', {
-  slidesPerView: 1, 
+  slidesPerView: 1,
   spaceBetween: 24,
   grabCursor: true,
   pagination: {
@@ -602,10 +622,10 @@ new Swiper('.unggulan-swiper', {
     clickable: true,
     dynamicBullets: true
   },
-  breakpoints: { 
-    576: { slidesPerView: 2 }, 
+  breakpoints: {
+    576: { slidesPerView: 2 },
     768: { slidesPerView: 3 },
-    1200: { slidesPerView: 4 } 
+    1200: { slidesPerView: 4 }
   }
 });
 
@@ -617,7 +637,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', function () {
-      filterBtns.forEach(b => { 
+      filterBtns.forEach(b => {
         b.classList.remove('active');
       });
       this.classList.add('active');
@@ -645,17 +665,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!r.ok) throw new Error();
         return r.text();
       })
-      .then(html => { 
-        produkList.innerHTML = html; 
-        AOS.refresh(); 
+      .then(html => {
+        produkList.innerHTML = html;
+        AOS.refresh();
       })
-      .catch(() => { 
+      .catch(() => {
         produkList.innerHTML = `
           <div class="col-12 text-center py-5">
             <i class="bi bi-exclamation-triangle-fill text-danger fs-1 mb-3"></i>
             <p class="text-danger fw-semibold">Gagal memuat produk. Silakan coba lagi.</p>
           </div>
-        `; 
+        `;
       });
   }
 });

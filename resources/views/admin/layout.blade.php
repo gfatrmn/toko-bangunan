@@ -140,7 +140,7 @@
         /* ─── Cards ─── */
         .stat-card {
             background: #fff;
-            border-radius: 20px;
+            border-radius: 10px;
             padding: 24px;
             border: 1px solid rgba(0,0,0,0.04);
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
@@ -167,7 +167,7 @@
         /* ─── Tables ─── */
         .card-dashboard {
             background: #fff;
-            border-radius: 20px;
+            border-radius: 10px;
             border: 1px solid rgba(0,0,0,0.04);
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
             overflow: hidden;
@@ -203,7 +203,7 @@
 
         .badge-status {
             padding: 4px 12px;
-            border-radius: 20px;
+            border-radius: 10px;
             font-size: 0.75rem;
             font-weight: 600;
         }
