@@ -4,124 +4,404 @@
 
 @push('styles')
 <style>
-  .product-card-img { height: 200px; object-fit: cover; border-radius: .75rem .75rem 0 0; }
-  .card { overflow: hidden; border-radius: 1rem; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
-  .btn-primary, .btn-outline-primary { border-radius: 30px; }
-  .btn-primary { background-color: #004aad; border: none; }
-  .btn-outline-primary { color: #004aad; border-color: #004aad; }
-  .btn-outline-primary:hover { background-color: #004aad; color: white; }
-  h3 { color: #003c8f; }
+  .pd-hero {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid #f0f2f5;
+  }
+  .pd-image {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 16px;
+    background: #f8fafc;
+    border: 1px solid #f0f2f5;
+  }
+  .pd-category-badge {
+    display: inline-block;
+    background: #eef2ff;
+    color: #004aad;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.35rem;
+  }
+  .pd-name {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #0f172a;
+    line-height: 1.3;
+    margin-bottom: 0.35rem;
+  }
+  .pd-price {
+    font-weight: 700;
+    font-size: 1.65rem;
+    color: #004aad;
+    margin-bottom: 0.5rem;
+  }
+  .pd-stock {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+  }
+  .pd-stock strong {
+    color: #0f172a;
+  }
+  .pd-stock.in-stock {
+    color: #16a34a;
+    font-weight: 600;
+  }
+
+  /* ─── Info Grid ─── */
+  .pd-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #f0f2f5;
+  }
+  .pd-info-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .pd-info-item .label {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+  }
+  .pd-info-item .value {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #0f172a;
+  }
+  .pd-info-item .value.brand {
+    color: #16a34a;
+    font-weight: 600;
+  }
+
+  /* ─── Deskripsi ─── */
+  .pd-desc {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.6;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #f0f2f5;
+  }
+  .pd-desc-title {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #0f172a;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .pd-desc p {
+    margin-bottom: 0;
+  }
+
+  /* ─── Add to cart form ─── */
+  .pd-cart-form {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    border: 1px solid #f0f2f5;
+  }
+  .pd-qty-input {
+    width: 75px;
+    text-align: center;
+    font-weight: 600;
+    border-radius: 10px;
+    border: 1px solid #d1d9e6;
+    padding: 0.45rem 0.5rem;
+    font-size: 0.9rem;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .pd-qty-input:focus {
+    border-color: #004aad;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,74,173,0.12);
+  }
+  .pd-btn-cart {
+    background: #004aad;
+    border: none;
+    border-radius: 12px;
+    padding: 0.55rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #fff;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 8px rgba(0,74,173,0.2);
+  }
+  .pd-btn-cart:hover {
+    background: #003d94;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(0,74,173,0.3);
+    color: #fff;
+  }
+  .pd-btn-back {
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    padding: 0.5rem 1.25rem;
+    border: 1px solid #d1d9e6;
+    color: #475569;
+    background: #fff;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .pd-btn-back:hover {
+    border-color: #a0b4cc;
+    background: #f8fafc;
+    color: #0f172a;
+  }
+  .pd-btn-login {
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.55rem 1.5rem;
+    background: #004aad;
+    border: none;
+    color: #fff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    box-shadow: 0 3px 8px rgba(0,74,173,0.2);
+  }
+  .pd-btn-login:hover {
+    background: #003d94;
+    color: #fff;
+  }
+  .pd-btn-disabled {
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.55rem 1.5rem;
+    background: #e2e8f0;
+    color: #94a3b8;
+    border: none;
+    cursor: not-allowed;
+  }
+
+  /* ─── Produk Serupa ─── */
+  .similar-section {
+    margin-top: 2.5rem;
+  }
+  .similar-section h5 {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .similar-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #f0f2f5;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    height: 100%;
+  }
+  .similar-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    border-color: #d1d9e6;
+  }
+  .similar-card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    border-bottom: 1px solid #f0f2f5;
+  }
+  .similar-card .body {
+    padding: 0.75rem 1rem;
+  }
+  .similar-card .body .name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+  }
+  .similar-card .body .price {
+    font-weight: 700;
+    color: #004aad;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  .similar-card .body .btn-detail {
+    font-size: 0.78rem;
+    font-weight: 500;
+    border-radius: 10px;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid #d1d9e6;
+    color: #475569;
+    background: #fff;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.15s;
+  }
+  .similar-card .body .btn-detail:hover {
+    border-color: #004aad;
+    color: #004aad;
+    background: #f0f5ff;
+  }
+
+  @media (max-width: 767px) {
+    .pd-name { font-size: 1.15rem; }
+    .pd-price { font-size: 1.3rem; }
+    .pd-info-grid { grid-template-columns: 1fr 1fr; padding: 0.85rem 1rem; }
+    .pd-cart-form { flex-direction: column; align-items: stretch; }
+    .pd-qty-input { width: 100%; }
+    .pd-btn-cart { width: 100%; text-align: center; }
+    .pd-image { min-height: 240px; }
+  }
 </style>
 @endpush
 
 @section('content')
-<div class="container my-5">
+<div class="container py-4">
 
+  {{-- Flash message --}}
   @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
-      {{ session('success') }}
+    <div class="alert alert-success alert-dismissible fade show" style="border-radius:12px;border:none;background:#dcfce7;color:#16a34a;">
+      <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
   @endif
 
-  <div class="row g-4">
+  <div class="pd-hero p-3 p-md-4">
+    <div class="row g-4 align-items-start">
 
-    {{-- Gambar Produk --}}
-    <div class="col-md-5">
-      <img src="{{ asset('sources/' . ($produk->gambar ?? 'default.jpg')) }}"
-           class="img-fluid rounded-4 shadow w-100"
-           style="max-height: 400px; object-fit: cover;"
-           alt="{{ $produk->nama }}">
-    </div>
-
-    {{-- Detail Produk --}}
-    <div class="col-md-7">
-      <span class="badge bg-primary mb-2">{{ $produk->kategori->nama ?? 'Tanpa Kategori' }}</span>
-      <h3 class="fw-bold">{{ $produk->nama }}</h3>
-      <p class="text-success fw-bold fs-4">Rp{{ number_format($produk->harga, 0, ',', '.') }}</p>
-      <p class="text-muted">Stok: <strong>{{ $produk->stok }}</strong></p>
-
-      {{-- Tab Spesifikasi & Deskripsi --}}
-      <ul class="nav nav-tabs mb-3" id="produkTab">
-        <li class="nav-item">
-          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#spesifikasi">
-            Spesifikasi
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#deskripsi">
-            Deskripsi
-          </button>
-        </li>
-      </ul>
-
-      <div class="tab-content border border-top-0 p-3 rounded-bottom mb-4">
-        <div class="tab-pane fade show active" id="spesifikasi">
-          <table class="table table-borderless mb-0">
-            <tr><td class="text-muted" style="width:40%">Satuan</td>
-                <td>: {{ $produk->satuan ?? '-' }}</td></tr>
-            <tr><td class="text-muted">Min. Pembelian</td>
-                <td>: {{ $produk->min_pembelian ?? 1 }}</td></tr>
-            <tr><td class="text-muted">Berat</td>
-                <td>: {{ $produk->berat }} gram / {{ number_format($produk->berat / 1000, 2) }} kg</td></tr>
-            <tr><td class="text-muted">Merek</td>
-                <td>: <strong class="text-success">{{ $produk->merek ?? '-' }}</strong></td></tr>
-          </table>
-        </div>
-        <div class="tab-pane fade" id="deskripsi">
-          <p class="mb-0">{{ $produk->deskripsi ?? 'Tidak ada deskripsi.' }}</p>
-        </div>
+      {{-- Gambar --}}
+      <div class="col-md-5">
+        <img src="{{ asset('sources/' . ($produk->gambar ?? 'default.jpg')) }}"
+             class="pd-image" alt="{{ $produk->nama }}">
       </div>
 
-      {{-- Form Tambah ke Keranjang --}}
-      @if($produk->stok > 0)
-        @if(session('user_id'))
-          <form method="POST" action="{{ route('keranjang.tambah') }}" class="d-flex align-items-center gap-3">
-            @csrf
-            <input type="hidden" name="produk_id" value="{{ $produk->id }}">
-            <div style="width: 100px">
-              <label class="form-label small text-muted">Jumlah</label>
-              <input type="number" name="qty" class="form-control text-center"
-                     value="1" min="1" max="{{ $produk->stok }}">
-            </div>
-            <div class="mt-3">
-              <button type="submit" class="btn btn-primary px-4">
-                <i class="bi bi-cart-plus me-2"></i>Tambah ke Keranjang
-              </button>
-            </div>
-          </form>
+      {{-- Detail --}}
+      <div class="col-md-7">
+        <span class="pd-category-badge">
+          <i class="bi bi-tag-fill me-1"></i>{{ $produk->kategoriRelasi->nama ?? 'Tanpa Kategori' }}
+        </span>
+        <h1 class="pd-name">{{ $produk->nama }}</h1>
+        <div class="pd-price">Rp{{ number_format($produk->harga, 0, ',', '.') }}</div>
+
+        @if($produk->stok > 0)
+          <div class="pd-stock in-stock">
+            <i class="bi bi-check-circle-fill me-1"></i>Stok tersedia: <strong>{{ $produk->stok }}</strong>
+          </div>
         @else
-          <a href="{{ route('login') }}" class="btn btn-primary px-4">
-            <i class="bi bi-box-arrow-in-right me-2"></i>Login untuk Beli
-          </a>
+          <div class="pd-stock">
+            <i class="bi bi-x-circle me-1"></i>Stok habis
+          </div>
         @endif
-      @else
-        <button class="btn btn-secondary px-4" disabled>Stok Habis</button>
-      @endif
 
-      <a href="{{ route('home') }}" class="btn btn-outline-secondary ms-2 mt-1">
-        <i class="bi bi-arrow-left me-1"></i>Kembali
-      </a>
+        {{-- Info Grid --}}
+        <div class="pd-info-grid">
+          <div class="pd-info-item">
+            <span class="label">Satuan</span>
+            <span class="value">{{ $produk->satuan ?? '-' }}</span>
+          </div>
+          <div class="pd-info-item">
+            <span class="label">Min. Pembelian</span>
+            <span class="value">{{ $produk->min_pembelian ?? 1 }}</span>
+          </div>
+          <div class="pd-info-item">
+            <span class="label">Berat</span>
+            <span class="value">{{ $produk->berat }} gram</span>
+          </div>
+          <div class="pd-info-item">
+            <span class="label">Merek</span>
+            <span class="value brand">{{ $produk->merek ?? '-' }}</span>
+          </div>
+        </div>
+
+        {{-- Deskripsi --}}
+        @if($produk->deskripsi)
+        <div class="pd-desc">
+          <div class="pd-desc-title"><i class="bi bi-info-circle me-1"></i>Deskripsi</div>
+          <p>{{ $produk->deskripsi }}</p>
+        </div>
+        @endif
+
+        {{-- Aksi --}}
+        @if($produk->stok > 0)
+          @if(session('user_id'))
+            <form method="POST" action="{{ route('keranjang.tambah') }}" class="pd-cart-form">
+              @csrf
+              <input type="hidden" name="produk_id" value="{{ $produk->id }}">
+              <div class="d-flex align-items-center gap-2">
+                <span style="font-size:0.85rem;font-weight:500;color:#475569;">Jumlah</span>
+                <input type="number" name="qty" class="pd-qty-input"
+                       value="1" min="1" max="{{ $produk->stok }}">
+              </div>
+              <button type="submit" class="pd-btn-cart">
+                <i class="bi bi-cart-plus me-1"></i>Tambah ke Keranjang
+              </button>
+            </form>
+          @else
+            <div class="pd-cart-form">
+              <a href="{{ route('login') }}" class="pd-btn-login">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Login untuk Membeli
+              </a>
+            </div>
+          @endif
+        @else
+          <div class="pd-cart-form">
+            <span class="pd-btn-disabled"><i class="bi bi-x-circle me-1"></i>Stok Habis</span>
+          </div>
+        @endif
+
+        <a href="{{ route('home') }}" class="pd-btn-back mt-1">
+          <i class="bi bi-arrow-left"></i>Kembali
+        </a>
+      </div>
+
     </div>
-
   </div>
 
   {{-- Produk Serupa --}}
-  @if($serupa->isNotEmpty())
-  <div class="mt-5">
-    <h5 class="fw-bold mb-4" style="color:#003c8f">Produk Serupa</h5>
-    <div class="row row-cols-2 row-cols-md-4 g-4">
+  @if(isset($serupa) && $serupa->isNotEmpty())
+  <div class="similar-section">
+    <h5><i class="bi bi-tags me-2"></i>Produk Serupa</h5>
+    <div class="row row-cols-2 row-cols-md-4 g-3">
       @foreach($serupa as $row)
       <div class="col">
-        <div class="card h-100">
-          <img src="{{ asset('sources/' . ($row->gambar ?? 'default.jpg')) }}"
-               class="product-card-img" alt="{{ $row->nama }}">
-          <div class="card-body">
-            <h6 class="card-title">{{ $row->nama }}</h6>
-            <p class="text-success fw-bold">Rp{{ number_format($row->harga, 0, ',', '.') }}</p>
-            <a href="{{ route('produk.show', $row->id) }}"
-               class="btn btn-sm btn-outline-primary">Lihat Detail</a>
+        <div class="similar-card">
+          <img src="{{ asset('sources/' . ($row->gambar ?? 'default.jpg')) }}" alt="{{ $row->nama }}">
+          <div class="body">
+            <div class="name">{{ $row->nama }}</div>
+            <div class="price">Rp{{ number_format($row->harga, 0, ',', '.') }}</div>
+            <a href="{{ route('produk.show', $row->id) }}" class="btn-detail">
+              Lihat Detail <i class="bi bi-chevron-right" style="font-size:0.65rem;"></i>
+            </a>
           </div>
         </div>
       </div>

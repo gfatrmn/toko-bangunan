@@ -467,6 +467,30 @@
   <span id="toast-message">Item berhasil diupdate</span>
 </div>
 
+{{-- Modal Konfirmasi Hapus --}}
+<div class="modal fade" id="modalHapus" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:380px;">
+    <div class="modal-content border-0 shadow" style="border-radius:16px;">
+      <div class="modal-body text-center py-4 px-4">
+        <div class="mb-3">
+          <span class="d-inline-flex align-items-center justify-content-center"
+                style="width:56px;height:56px;border-radius:50%;background:#fef2f2;color:#ef4444;font-size:1.5rem;">
+            <i class="bi bi-trash3"></i>
+          </span>
+        </div>
+        <h6 class="fw-bold mb-1">Hapus Item?</h6>
+        <p class="text-muted small mb-3" id="modalHapusText" style="font-size:0.85rem;">
+          Apakah kamu yakin ingin menghapus item ini?
+        </p>
+        <div class="d-flex gap-2 justify-content-center">
+          <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold px-4" style="border-radius:10px;" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-danger btn-sm fw-semibold px-4" style="border-radius:10px;" id="btnHapusConfirm">Ya, Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="cart-section">
   <div class="container">
 
@@ -554,11 +578,12 @@
                   <div class="item-subtotal mb-1">
                     Rp{{ number_format($item->produk->harga * $item->jumlah, 0, ',', '.') }}
                   </div>
-                  <a href="{{ route('keranjang.hapus', $item->id) }}"
-                     class="btn-delete-item"
-                     onclick="return confirm('Hapus item ini dari keranjang?')">
+                  <button type="button"
+                     class="btn-delete-item btn-delete-keranjang"
+                     data-id="{{ $item->id }}"
+                     data-nama="{{ $item->produk->nama }}">
                     <i class="bi bi-trash3"></i>
-                  </a>
+                  </button>
                 </div>
 
                 {{-- Mobile bottom row --}}
@@ -574,11 +599,12 @@
                       <div class="item-subtotal">
                         Rp{{ number_format($item->produk->harga * $item->jumlah, 0, ',', '.') }}
                       </div>
-                      <a href="{{ route('keranjang.hapus', $item->id) }}"
-                         class="btn-delete-item"
-                         onclick="return confirm('Hapus item ini?')">
+                      <button type="button"
+                         class="btn-delete-item btn-delete-keranjang"
+                         data-id="{{ $item->id }}"
+                         data-nama="{{ $item->produk->nama }}">
                         <i class="bi bi-trash3"></i>
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -694,8 +720,54 @@ function syncToServer(itemId, newQty) {
   .catch(err => console.error('Sync error:', err));
 }
 
-// ─── Event Listeners: Quantity Controls ───
+// ─── Event Listeners: Quantity Controls & Delete ───
 document.addEventListener('DOMContentLoaded', function () {
+  // ─── Delete item via AJAX ───
+  let deleteItemId = null;
+  document.querySelectorAll('.btn-delete-keranjang').forEach(btn => {
+    btn.addEventListener('click', function () {
+      deleteItemId = this.dataset.id;
+      const nama = this.dataset.nama;
+      document.getElementById('modalHapusText').textContent =
+        'Apakah kamu yakin ingin menghapus "' + nama + '" dari keranjang?';
+      const modal = new bootstrap.Modal(document.getElementById('modalHapus'));
+      modal.show();
+    });
+  });
+  document.getElementById('btnHapusConfirm').addEventListener('click', function () {
+    if (!deleteItemId) return;
+    this.disabled = true;
+    const btn = this;
+    fetch('/keranjang/hapus/' + deleteItemId, {
+      method: 'GET',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        const card = document.querySelector('.cart-item-card[data-id="' + deleteItemId + '"]');
+        if (card) {
+          card.classList.add('item-removing');
+          setTimeout(() => {
+            card.remove();
+            recalcAll();
+            if (document.querySelectorAll('.cart-item-card').length === 0) {
+              location.reload();
+            } else {
+              showToast('Item berhasil dihapus');
+            }
+          }, 300);
+        }
+        const modalEl = document.getElementById('modalHapus');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+      }
+    })
+    .catch(err => console.error('Delete error:', err))
+    .finally(() => { btn.disabled = false; });
+  });
+
+  // ─── Quantity Controls ───
   document.querySelectorAll('.cart-item-card').forEach(card => {
     const id = card.dataset.id;
     const input = card.querySelector('.qty-value');

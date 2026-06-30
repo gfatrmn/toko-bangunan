@@ -113,6 +113,10 @@ class KeranjangController extends Controller
                  ->where('user_id', $user_id)
                  ->delete();
 
+        if (request()->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
         return redirect()->route('keranjang.index')
                          ->with('success', 'Item berhasil dihapus.');
     }
