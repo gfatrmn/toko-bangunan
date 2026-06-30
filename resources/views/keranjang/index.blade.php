@@ -542,7 +542,14 @@
 
           <div id="cart-items-container">
             @foreach($items as $item)
-            <div class="cart-item-card" data-id="{{ $item->id }}" data-price="{{ $item->produk->harga }}" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
+              @php
+                $hargaAsli = $item->produk->harga;
+                $hargaTampil = $hargaAsli;
+                if ($role === 'kontraktor') {
+                    $hargaTampil = $hargaAsli - ($hargaAsli * 10 / 100);
+                }
+              @endphp
+            <div class="cart-item-card" data-id="{{ $item->id }}" data-price="{{ $hargaTampil }}" data-original-price="{{ $hargaAsli }}" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
               <div class="row g-2 align-items-center">
                 {{-- Image --}}
                 <div class="col-3 col-md-2">
@@ -560,7 +567,14 @@
 
                 {{-- Harga (desktop) --}}
                 <div class="col-md-2 text-center d-none d-md-block">
-                  <div class="item-price-standalone">Rp{{ number_format($item->produk->harga, 0, ',', '.') }}</div>
+                  <div class="item-price-standalone">
+                    @if($role === 'kontraktor')
+                      <span style="text-decoration: line-through; color: #94a3b8; font-size: 0.75rem;">Rp{{ number_format($hargaAsli, 0, ',', '.') }}</span>
+                      <br><span style="color: #dc2626;">Rp{{ number_format($hargaTampil, 0, ',', '.') }}</span>
+                    @else
+                      Rp{{ number_format($hargaTampil, 0, ',', '.') }}
+                    @endif
+                  </div>
                 </div>
 
                 {{-- Quantity (desktop) --}}
@@ -576,7 +590,7 @@
                 {{-- Subtotal & Delete (desktop) --}}
                 <div class="col-md-2 cart-item-col-subtotal d-none d-md-block">
                   <div class="item-subtotal mb-1">
-                    Rp{{ number_format($item->produk->harga * $item->jumlah, 0, ',', '.') }}
+                    Rp{{ number_format($hargaTampil * $item->jumlah, 0, ',', '.') }}
                   </div>
                   <button type="button"
                      class="btn-delete-item btn-delete-keranjang"
@@ -597,7 +611,7 @@
                     </div>
                     <div class="d-flex align-items-center gap-2">
                       <div class="item-subtotal">
-                        Rp{{ number_format($item->produk->harga * $item->jumlah, 0, ',', '.') }}
+                        Rp{{ number_format($hargaTampil * $item->jumlah, 0, ',', '.') }}
                       </div>
                       <button type="button"
                          class="btn-delete-item btn-delete-keranjang"
@@ -626,14 +640,6 @@
               </span>
             </div>
 
-            @if($role === 'kontraktor')
-            <div class="summary-row">
-              <span class="label">Diskon Kontraktor ({{ $diskonPersen }}%)</span>
-              <span class="value text-danger" id="summary-diskon">
-                -Rp{{ number_format($diskonNominal, 0, ',', '.') }}
-              </span>
-            </div>
-            @endif
 
             <div class="summary-row">
               <span class="label">Ongkos Kirim</span>
@@ -690,42 +696,30 @@ function showToast(message) {
   }, 3000);
 }
 
-// ─── Hitung ulang subtotal card + total global secara client-side ───
-function recalcAll() {
-  let totalAll = 0;
-  let totalQty = 0;
-  document.querySelectorAll('.cart-item-card').forEach(card => {
-    const price = parseInt(card.dataset.price) || 0;
-    const qty   = parseInt(card.querySelector('.qty-value').value) || 0;
-    const sub = price * qty;
-    totalAll += sub;
-    totalQty += qty;
-    // Update subtotal di card
-    card.querySelectorAll('.item-subtotal').forEach(el => {
-      el.textContent = formatRupiah(sub);
+  // ─── Hitung ulang subtotal card + total global secara client-side ───
+  function recalcAll() {
+    let totalAll = 0;
+    let totalQty = 0;
+    document.querySelectorAll('.cart-item-card').forEach(card => {
+      const price = parseInt(card.dataset.price) || 0;
+      const qty   = parseInt(card.querySelector('.qty-value').value) || 0;
+      const sub = price * qty;
+      totalAll += sub;
+      totalQty += qty;
+      // Update subtotal di card
+      card.querySelectorAll('.item-subtotal').forEach(el => {
+        el.textContent = formatRupiah(sub);
+      });
     });
-  });
-  // Update summary
-  document.getElementById('summary-subtotal').textContent = formatRupiah(totalAll);
-
-  // Cek apakah ada diskon kontraktor
-  const diskonEl = document.getElementById('summary-diskon');
-  const hasDiskon = {{ $role === 'kontraktor' ? 'true' : 'false' }};
-  if (hasDiskon && diskonEl) {
-    const diskonPersen = {{ $diskonPersen }};
-    const diskonNominal = (totalAll * diskonPersen) / 100;
-    const grandTotal = totalAll - diskonNominal;
-    diskonEl.textContent = '-' + formatRupiah(diskonNominal);
-    document.getElementById('summary-total').textContent = formatRupiah(grandTotal);
-  } else {
+    // Update summary (harga sudah termasuk diskon per-item untuk kontraktor)
+    document.getElementById('summary-subtotal').textContent = formatRupiah(totalAll);
     document.getElementById('summary-total').textContent = formatRupiah(totalAll);
-  }
 
-  // Update badge
-  const badge = document.querySelector('.badge-jumlah');
-  if (badge) badge.textContent = totalQty + ' item';
-  return totalAll;
-}
+    // Update badge
+    const badge = document.querySelector('.badge-jumlah');
+    if (badge) badge.textContent = totalQty + ' item';
+    return totalAll;
+  }
 
 // ─── Sync ke server (background, tanpa nunggu) ───
 function syncToServer(itemId, newQty) {

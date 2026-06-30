@@ -311,7 +311,15 @@
           <i class="bi bi-tag-fill me-1"></i>{{ $produk->kategoriRelasi->nama ?? 'Tanpa Kategori' }}
         </span>
         <h1 class="pd-name">{{ $produk->nama }}</h1>
-        <div class="pd-price">Rp{{ number_format($produk->harga, 0, ',', '.') }}</div>
+        <div class="pd-price">
+          @if($role === 'kontraktor')
+            @php $hargaDiskon = $produk->harga - ($produk->harga * 10 / 100); @endphp
+            <span style="text-decoration: line-through; color: #94a3b8; font-size: 1rem; font-weight: 500;">Rp{{ number_format($produk->harga, 0, ',', '.') }}</span>
+            <span style="color: #dc2626; margin-left: 0.5rem;">Rp{{ number_format($hargaDiskon, 0, ',', '.') }}</span>
+          @else
+            Rp{{ number_format($produk->harga, 0, ',', '.') }}
+          @endif
+        </div>
 
         @if($produk->stok > 0)
           <div class="pd-stock in-stock">

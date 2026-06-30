@@ -25,8 +25,12 @@ class ProdukController extends Controller
 
         $produk = $query->get();
 
+        // Data diskon kontraktor
+        $role         = session('role');
+        $diskonPersen = ($role === 'kontraktor') ? 10 : 0;
+
         // Return HTML partial (bukan full page)
-        return view('partials.produk-list', compact('produk'));
+        return view('partials.produk-list', compact('produk', 'role', 'diskonPersen'));
     }
 
     public function show($id)
@@ -38,6 +42,10 @@ class ProdukController extends Controller
                         ->limit(4)
                         ->get();
 
-        return view('produk.show', compact('produk', 'serupa'));
+        // Data diskon kontraktor
+        $role         = session('role');
+        $diskonPersen = ($role === 'kontraktor') ? 10 : 0;
+
+        return view('produk.show', compact('produk', 'serupa', 'role', 'diskonPersen'));
     }
 }

@@ -23,7 +23,11 @@ class HomeController extends Controller
 
         $search = request('search', '');
 
+        // Data untuk diskon kontraktor
+        $role         = session('role');
+        $diskonPersen = ($role === 'kontraktor') ? 10 : 0;
+
         // Kirim data ke view
-        return view('index', compact('unggulan', 'kategoris', 'search'));
+        return view('index', compact('unggulan', 'kategoris', 'search', 'role', 'diskonPersen'));
     }
 }

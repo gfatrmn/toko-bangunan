@@ -18,15 +18,22 @@ class KeranjangController extends Controller
                           ->where('user_id', $user_id)
                           ->get();
 
-        $total = $items->sum(fn($item) => $item->produk->harga * $item->jumlah);
-
         // Diskon khusus kontraktor
-        $diskonPersen = 0;
-        if ($role === 'kontraktor') {
-            $diskonPersen = 10; // 10% untuk kontraktor
+        $diskonPersen = ($role === 'kontraktor') ? 10 : 0;
+
+        // Hitung total dengan harga yang sudah didiskon per item
+        $total = 0;
+        foreach ($items as $item) {
+            $hargaSatuan = $item->produk->harga;
+            // Untuk kontraktor, harga satuan sudah termasuk diskon
+            if ($role === 'kontraktor') {
+                $hargaSatuan = $hargaSatuan - ($hargaSatuan * 10 / 100);
+            }
+            $total += $hargaSatuan * $item->jumlah;
         }
-        $diskonNominal = ($total * $diskonPersen) / 100;
-        $grandTotal    = $total - $diskonNominal;
+
+        $diskonNominal = 0; // Diskon sudah dihitung per item, tidak perlu diskon tambahan
+        $grandTotal    = $total;
 
         return view('keranjang.index', compact(
             'items', 'total', 'role', 'diskonPersen', 'diskonNominal', 'grandTotal'
@@ -85,25 +92,40 @@ class KeranjangController extends Controller
         $item->jumlah = $jumlah;
         $item->save();
 
-        // Hitung ulang total seluruh keranjang
-        $total = Keranjang::with('produk')
-                          ->where('user_id', $user_id)
-                          ->get()
-                          ->sum(fn($i) => $i->produk->harga * $i->jumlah);
-
         // Diskon kontraktor
         $diskonPersen = ($role === 'kontraktor') ? 10 : 0;
-        $diskonNominal = ($total * $diskonPersen) / 100;
-        $grandTotal    = $total - $diskonNominal;
+
+        // Hitung ulang total seluruh keranjang (dengan diskon per item untuk kontraktor)
+        $allItems = Keranjang::with('produk')
+                             ->where('user_id', $user_id)
+                             ->get();
+
+        $total = 0;
+        foreach ($allItems as $i) {
+            $hs = $i->produk->harga;
+            if ($role === 'kontraktor') {
+                $hs = $hs - ($hs * 10 / 100);
+            }
+            $total += $hs * $i->jumlah;
+        }
+
+        $diskonNominal = 0;
+        $grandTotal    = $total;
 
         // Hitung total jumlah item (semua qty)
-        $totalItems = Keranjang::where('user_id', $user_id)
-                               ->sum('jumlah');
+        $totalItems = $allItems->sum('jumlah');
+
+        // Subtotal item yang diupdate (dengan diskon jika kontraktor)
+        $hsItem = $item->produk->harga;
+        if ($role === 'kontraktor') {
+            $hsItem = $hsItem - ($hsItem * 10 / 100);
+        }
+        $subtotalItem = $jumlah * $hsItem;
 
         return response()->json([
             'success'        => true,
             'jumlah_final'   => $jumlah,
-            'subtotal'       => $jumlah * $item->produk->harga,
+            'subtotal'       => $subtotalItem,
             'total'          => $total,
             'diskon_persen'  => $diskonPersen,
             'diskon_nominal' => $diskonNominal,
