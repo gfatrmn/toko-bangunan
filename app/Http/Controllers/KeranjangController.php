@@ -12,18 +12,25 @@ class KeranjangController extends Controller
     public function index()
     {
         $user_id = session('user_id');
+        $role    = session('role'); // 'pengguna' atau 'kontraktor'
 
-        // Ambil semua item keranjang + data produknya
-        // Setara: SELECT k.*, p.nama, p.harga, p.gambar, p.stok
-        //         FROM keranjang k JOIN produk p ON k.produk_id = p.id
-        //         WHERE k.user_id = $user_id
         $items = Keranjang::with('produk')
                           ->where('user_id', $user_id)
                           ->get();
 
         $total = $items->sum(fn($item) => $item->produk->harga * $item->jumlah);
 
-        return view('keranjang.index', compact('items', 'total'));
+        // Diskon khusus kontraktor
+        $diskonPersen = 0;
+        if ($role === 'kontraktor') {
+            $diskonPersen = 10; // 10% untuk kontraktor
+        }
+        $diskonNominal = ($total * $diskonPersen) / 100;
+        $grandTotal    = $total - $diskonNominal;
+
+        return view('keranjang.index', compact(
+            'items', 'total', 'role', 'diskonPersen', 'diskonNominal', 'grandTotal'
+        ));
     }
 
     // ─── Tambah produk ke keranjang ───────────────────────────
@@ -33,21 +40,16 @@ class KeranjangController extends Controller
         $produk_id = $request->produk_id;
         $qty       = max(1, (int) $request->qty);
 
-        // Cek produk ada
         $produk = Produk::findOrFail($produk_id);
 
-        // Cek apakah produk sudah ada di keranjang user ini
-        // Setara: SELECT * FROM keranjang WHERE user_id = ? AND produk_id = ?
         $existing = Keranjang::where('user_id', $user_id)
                              ->where('produk_id', $produk_id)
                              ->first();
 
         if ($existing) {
-            // Sudah ada → tambah jumlahnya
             $existing->jumlah = min($existing->jumlah + $qty, $produk->stok);
             $existing->save();
         } else {
-            // Belum ada → insert baru
             Keranjang::create([
                 'user_id'   => $user_id,
                 'produk_id' => $produk_id,
@@ -63,10 +65,10 @@ class KeranjangController extends Controller
     public function updateJumlah(Request $request)
     {
         $user_id = session('user_id');
+        $role    = session('role');
         $id      = (int) $request->id;
         $jumlah  = max(1, (int) $request->jumlah);
 
-        // Ambil item + stok produk sekaligus
         $item = Keranjang::with('produk')
                          ->where('id', $id)
                          ->where('user_id', $user_id)
@@ -76,7 +78,6 @@ class KeranjangController extends Controller
             return response()->json(['success' => false, 'message' => 'Item tidak ditemukan']);
         }
 
-        // Jangan melebihi stok
         if ($jumlah > $item->produk->stok) {
             $jumlah = $item->produk->stok;
         }
@@ -90,16 +91,24 @@ class KeranjangController extends Controller
                           ->get()
                           ->sum(fn($i) => $i->produk->harga * $i->jumlah);
 
+        // Diskon kontraktor
+        $diskonPersen = ($role === 'kontraktor') ? 10 : 0;
+        $diskonNominal = ($total * $diskonPersen) / 100;
+        $grandTotal    = $total - $diskonNominal;
+
         // Hitung total jumlah item (semua qty)
         $totalItems = Keranjang::where('user_id', $user_id)
                                ->sum('jumlah');
 
         return response()->json([
-            'success'      => true,
-            'jumlah_final' => $jumlah,
-            'subtotal'     => $jumlah * $item->produk->harga,
-            'total'        => $total,
-            'total_items'  => $totalItems,
+            'success'        => true,
+            'jumlah_final'   => $jumlah,
+            'subtotal'       => $jumlah * $item->produk->harga,
+            'total'          => $total,
+            'diskon_persen'  => $diskonPersen,
+            'diskon_nominal' => $diskonNominal,
+            'grand_total'    => $grandTotal,
+            'total_items'    => $totalItems,
         ]);
     }
 
@@ -108,7 +117,6 @@ class KeranjangController extends Controller
     {
         $user_id = session('user_id');
 
-        // Pastikan hanya bisa hapus milik sendiri
         Keranjang::where('id', $id)
                  ->where('user_id', $user_id)
                  ->delete();

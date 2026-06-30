@@ -626,6 +626,15 @@
               </span>
             </div>
 
+            @if($role === 'kontraktor')
+            <div class="summary-row">
+              <span class="label">Diskon Kontraktor ({{ $diskonPersen }}%)</span>
+              <span class="value text-danger" id="summary-diskon">
+                -Rp{{ number_format($diskonNominal, 0, ',', '.') }}
+              </span>
+            </div>
+            @endif
+
             <div class="summary-row">
               <span class="label">Ongkos Kirim</span>
               <span class="value text-success">
@@ -638,7 +647,7 @@
             <div class="summary-total">
               <span class="label">Total Belanja</span>
               <span class="value" id="summary-total">
-                Rp{{ number_format($total, 0, ',', '.') }}
+                Rp{{ number_format($grandTotal, 0, ',', '.') }}
               </span>
             </div>
 
@@ -698,7 +707,20 @@ function recalcAll() {
   });
   // Update summary
   document.getElementById('summary-subtotal').textContent = formatRupiah(totalAll);
-  document.getElementById('summary-total').textContent = formatRupiah(totalAll);
+
+  // Cek apakah ada diskon kontraktor
+  const diskonEl = document.getElementById('summary-diskon');
+  const hasDiskon = {{ $role === 'kontraktor' ? 'true' : 'false' }};
+  if (hasDiskon && diskonEl) {
+    const diskonPersen = {{ $diskonPersen }};
+    const diskonNominal = (totalAll * diskonPersen) / 100;
+    const grandTotal = totalAll - diskonNominal;
+    diskonEl.textContent = '-' + formatRupiah(diskonNominal);
+    document.getElementById('summary-total').textContent = formatRupiah(grandTotal);
+  } else {
+    document.getElementById('summary-total').textContent = formatRupiah(totalAll);
+  }
+
   // Update badge
   const badge = document.querySelector('.badge-jumlah');
   if (badge) badge.textContent = totalQty + ' item';
