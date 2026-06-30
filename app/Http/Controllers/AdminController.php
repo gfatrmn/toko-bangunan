@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Produk;
+use App\Models\Pemesanan;
+use App\Models\User;
+use App\Models\Kategori;
+use Illuminate\Http\Request;
+
+class AdminController extends Controller
+{
+    public function dashboard()
+    {
+        // Statistik utama
+        $totalProduk    = Produk::count();
+        $totalPesanan   = Pemesanan::count();
+        $totalUser      = User::count();
+        $totalPendapatan = Pemesanan::where('status_pembayaran', 'lunas')->sum('total');
+
+        // Pesanan terbaru (5 data)
+        $pesananTerbaru = Pemesanan::with('user')
+                            ->orderBy('created_at', 'desc')
+                            ->take(5)
+                            ->get();
+
+        // Produk dengan stok menipis (stok <= 5)
+        $stokMenipis = Produk::where('stok', '<=', 5)
+                        ->orderBy('stok', 'asc')
+                        ->take(5)
+                        ->get();
+
+        // Data untuk chart penjualan (7 hari terakhir)
+        $penjualanHarian = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $tanggal = now()->subDays($i)->format('Y-m-d');
+            $total   = Pemesanan::whereDate('created_at', $tanggal)
+                        ->where('status_pembayaran', 'lunas')
+                        ->sum('total');
+            $penjualanHarian[] = [
+                'tanggal' => now()->subDays($i)->format('d M'),
+                'total'   => (int) $total,
+            ];
+        }
+
+        return view('admin.dashboard', compact(
+            'totalProduk', 'totalPesanan', 'totalUser', 'totalPendapatan',
+            'pesananTerbaru', 'stokMenipis', 'penjualanHarian'
+        ));
+    }
+}

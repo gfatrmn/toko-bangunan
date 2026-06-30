@@ -36,7 +36,8 @@ Route::middleware('auth.session')->group(function () {
 
 });
 
-// ─── Placeholder ──────────────────────────────────────────────
-Route::get('/pembayaran/{id}', fn($id) => 'Pembayaran - coming soon')->name('pembayaran.index');
-Route::get('/admin/dashboard',  fn() => 'Admin - coming soon')->name('admin.dashboard');
-Route::get('/admin/konfirmasi', fn() => 'Konfirmasi - coming soon')->name('admin.konfirmasi');
+// ─── Admin (wajib login & role admin) ─────────────────────────
+Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard',   [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/konfirmasi',  fn() => 'Konfirmasi - coming soon')->name('konfirmasi');
+});
