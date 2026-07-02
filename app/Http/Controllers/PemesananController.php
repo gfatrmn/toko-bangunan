@@ -64,7 +64,7 @@ class PemesananController extends Controller
             'telepon'          => $request->telepon,
             'total'            => $total,
             'tanggal'          => now(),
-            'status_pembayaran'=> 'Belum Bayar',
+            'status_pembayaran'=> 'pending',
         ]);
 
         // 2. Simpan detail tiap produk + kurangi stok

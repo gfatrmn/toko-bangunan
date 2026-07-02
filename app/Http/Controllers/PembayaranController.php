@@ -41,17 +41,17 @@ class PembayaranController extends Controller
         // Handle upload file ke public/uploads
         if ($request->hasFile('bukti_pembayaran')) {
             $file = $request->file('bukti_pembayaran');
-            
+
             // Bikin nama file unik (misal: bayar_5_1684920.jpg)
             $filename = 'bayar_' . $pesanan->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-            
+
             // Setara dengan move_uploaded_file() di PHP Native
             $file->move(public_path('uploads'), $filename);
 
             // Update database
             $pesanan->bukti_pembayaran  = $filename;
             $pesanan->metode_pembayaran = $request->metode_pembayaran;
-            $pesanan->status_pembayaran = 'Menunggu Konfirmasi';
+            $pesanan->status_pembayaran = 'pending';
             $pesanan->save();
         }
 

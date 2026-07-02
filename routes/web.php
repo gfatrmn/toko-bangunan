@@ -43,5 +43,8 @@ Route::middleware('auth.session')->group(function () {
 // ─── Admin (wajib login & role admin) ─────────────────────────
 Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard',   [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/konfirmasi',  fn() => 'Konfirmasi - coming soon')->name('konfirmasi');
+    Route::get('/konfirmasi',           [App\Http\Controllers\AdminController::class, 'konfirmasi'])->name('konfirmasi');
+    Route::get('/konfirmasi/detail/{id}', [App\Http\Controllers\AdminController::class, 'detail'])->name('konfirmasi.detail');
+    Route::post('/konfirmasi/terima/{id}', [App\Http\Controllers\AdminController::class, 'terima'])->name('konfirmasi.terima');
+    Route::post('/konfirmasi/tolak/{id}',  [App\Http\Controllers\AdminController::class, 'tolak'])->name('konfirmasi.tolak');
 });

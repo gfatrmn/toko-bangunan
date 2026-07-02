@@ -48,4 +48,100 @@ class AdminController extends Controller
             'pesananTerbaru', 'stokMenipis', 'penjualanHarian'
         ));
     }
+
+    /**
+     * Menampilkan daftar pesanan yang perlu dikonfirmasi (pending)
+     */
+    public function konfirmasi(Request $request)
+    {
+        $query = Pemesanan::with('user')
+                    ->orderByRaw("FIELD(status_pembayaran, 'pending', 'lunas', 'ditolak') ASC")
+                    ->orderBy('created_at', 'desc');
+
+        // Filter status
+        if ($request->filled('status')) {
+            $query->where('status_pembayaran', $request->status);
+        }
+
+        // Pencarian berdasarkan ID atau nama
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('id', 'LIKE', "%{$search}%")
+                  ->orWhere('nama', 'LIKE', "%{$search}%")
+                  ->orWhere('telepon', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $pesanan = $query->paginate(10)->withQueryString();
+
+        // Statistik untuk card info
+        $pendingCount = Pemesanan::where('status_pembayaran', 'pending')->count();
+        $lunasCount   = Pemesanan::where('status_pembayaran', 'lunas')->count();
+        $ditolakCount = Pemesanan::where('status_pembayaran', 'ditolak')->count();
+
+        return view('admin.konfirmasi.index', compact(
+            'pesanan', 'pendingCount', 'lunasCount', 'ditolakCount'
+        ));
+    }
+
+    /**
+     * Menampilkan detail pesanan lengkap dengan bukti pembayaran
+     */
+    public function detail($id)
+    {
+        $pesanan = Pemesanan::with(['user', 'details.produk'])->findOrFail($id);
+        return view('admin.konfirmasi.detail', compact('pesanan'));
+    }
+
+    /**
+     * Menerima pembayaran dan mengubah status menjadi lunas
+     * Stok produk akan otomatis dikurangi
+     */
+    public function terima($id)
+    {
+        $pesanan = Pemesanan::with('details.produk')->findOrFail($id);
+
+        if ($pesanan->status_pembayaran !== 'pending') {
+            return redirect()->back()->with('error', 'Pesanan ini sudah diproses sebelumnya.');
+        }
+
+        // Kurangi stok produk
+        foreach ($pesanan->details as $detail) {
+            $produk = $detail->produk;
+            if ($produk) {
+                $stokBaru = max(0, $produk->stok - $detail->jumlah);
+                $produk->update(['stok' => $stokBaru]);
+            }
+        }
+
+        $pesanan->update(['status_pembayaran' => 'lunas']);
+
+        return redirect()->route('admin.konfirmasi')
+            ->with('success', "Pesanan #{$pesanan->id} berhasil dikonfirmasi sebagai LUNAS. Stok telah diperbarui.");
+    }
+
+    /**
+     * Menolak pembayaran dan mengubah status menjadi ditolak
+     */
+    public function tolak(Request $request, $id)
+    {
+        $request->validate([
+            'alasan_penolakan' => 'required|string|max:500',
+        ]);
+
+        $pesanan = Pemesanan::findOrFail($id);
+
+        if ($pesanan->status_pembayaran !== 'pending') {
+            return redirect()->back()->with('error', 'Pesanan ini sudah diproses sebelumnya.');
+        }
+
+        $pesanan->update([
+            'status_pembayaran' => 'ditolak',
+            'alasan_penolakan'  => $request->alasan_penolakan,
+        ]);
+
+        return redirect()->route('admin.konfirmasi')
+            ->with('success', "Pesanan #{$pesanan->id} telah ditolak.");
+    }
 }

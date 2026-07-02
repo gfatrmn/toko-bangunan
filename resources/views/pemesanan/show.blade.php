@@ -10,13 +10,14 @@
   .status-belum { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
   .status-menunggu { background: #cce5ff; color: #004085; border: 1px solid #b8daff; }
   .status-dibayar { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .status-ditolak { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
   .product-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
 </style>
 @endpush
 
 @section('content')
 <div class="container my-5">
-  
+
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="section-title mb-0">
       <i class="bi bi-receipt-cutoff me-2"></i>Detail Pesanan #{{ $pesanan->id }}
@@ -26,21 +27,39 @@
     </a>
   </div>
 
+  @if($pesanan->status_pembayaran == 'ditolak' && $pesanan->alasan_penolakan)
+  <div class="alert alert-danger d-flex align-items-start gap-2 mb-4">
+    <i class="bi bi-x-octagon-fill mt-1"></i>
+    <div>
+      <strong>Pembayaran Ditolak</strong><br>
+      {{ $pesanan->alasan_penolakan }}
+    </div>
+  </div>
+  @endif
+
   <div class="row g-4">
     {{-- Info Pesanan & Pengiriman --}}
     <div class="col-lg-4">
       <div class="card border-0 shadow-sm rounded-4 mb-4 p-3">
         <h6 class="fw-bold border-bottom pb-2 mb-3">Status Pembayaran</h6>
         <div class="mb-2">
-          @if($pesanan->status_pembayaran === 'Belum Bayar')
-            <span class="status-badge status-belum d-inline-block w-100 text-center">Belum Bayar</span>
-          @elseif($pesanan->status_pembayaran === 'Menunggu Konfirmasi')
-            <span class="status-badge status-menunggu d-inline-block w-100 text-center">Menunggu Konfirmasi</span>
-          @else
-            <span class="status-badge status-dibayar d-inline-block w-100 text-center">Lunas</span>
-          @endif
+          @php
+            $statusLabel = match($pesanan->status_pembayaran) {
+              'pending' => 'Belum Bayar',
+              'lunas' => 'Lunas',
+              'ditolak' => 'Ditolak',
+              default => $pesanan->status_pembayaran
+            };
+            $statusClass = match($pesanan->status_pembayaran) {
+              'pending' => 'status-belum',
+              'lunas' => 'status-dibayar',
+              'ditolak' => 'status-ditolak',
+              default => 'status-belum'
+            };
+          @endphp
+          <span class="status-badge {{ $statusClass }} d-inline-block w-100 text-center">{{ $statusLabel }}</span>
         </div>
-        @if($pesanan->status_pembayaran === 'Belum Bayar')
+        @if($pesanan->status_pembayaran == 'pending')
           <a href="{{ route('pembayaran.index', $pesanan->id) }}" class="btn btn-primary w-100 mt-2 py-2">
             Bayar Sekarang
           </a>
@@ -51,10 +70,10 @@
         <h6 class="fw-bold border-bottom pb-2 mb-3">Data Pengiriman</h6>
         <p class="mb-1 text-muted small">Nama Penerima</p>
         <p class="fw-medium mb-3">{{ $pesanan->nama }}</p>
-        
+
         <p class="mb-1 text-muted small">No. Telepon</p>
         <p class="fw-medium mb-3">{{ $pesanan->telepon }}</p>
-        
+
         <p class="mb-1 text-muted small">Alamat Pengiriman</p>
         <p class="fw-medium mb-0">{{ $pesanan->alamat }}</p>
       </div>
