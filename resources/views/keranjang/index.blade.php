@@ -526,7 +526,7 @@
 
     @if($items->isEmpty())
       {{-- ═══ Empty Cart ═══ --}}
-      <div class="empty-cart" data-aos="fade-up">
+      <div class="empty-cart">
         <i class="bi bi-cart-x"></i>
         <h5>Keranjangmu Masih Kosong</h5>
         <p>Yuk, isi dengan kebutuhan bangunanmu sekarang!</p>
@@ -561,7 +561,7 @@
                     $hargaTampil = $hargaAsli - ($hargaAsli * 10 / 100);
                 }
               @endphp
-            <div class="cart-item-card" data-id="{{ $item->id }}" data-price="{{ $hargaTampil }}" data-original-price="{{ $hargaAsli }}" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
+            <div class="cart-item-card" data-id="{{ $item->id }}" data-price="{{ $hargaTampil }}" data-original-price="{{ $hargaAsli }}">
               <div class="row g-2 align-items-center">
                 {{-- Image --}}
                 <div class="col-3 col-md-2">
@@ -641,7 +641,7 @@
         </div>
 
         {{-- ─── Right: Order Summary ─── --}}
-        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="col-lg-4">
           <div class="order-summary">
             <h5><i class="bi bi-receipt-cutoff me-2"></i>Ringkasan Belanja</h5>
 
@@ -730,6 +730,10 @@ function showToast(message) {
     // Update badge
     const badge = document.querySelector('.badge-jumlah');
     if (badge) badge.textContent = totalQty + ' item';
+
+    // Update header badge via global function
+    if (typeof updateCartBadge === 'function') updateCartBadge();
+
     return totalAll;
   }
 
@@ -779,6 +783,7 @@ document.addEventListener('DOMContentLoaded', function () {
           setTimeout(() => {
             card.remove();
             recalcAll();
+            if (typeof updateCartBadge === 'function') updateCartBadge();
             if (document.querySelectorAll('.cart-item-card').length === 0) {
               location.reload();
             } else {

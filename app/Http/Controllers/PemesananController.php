@@ -13,6 +13,7 @@ class PemesananController extends Controller
     public function create()
     {
         $user_id = session('user_id');
+        $role    = session('role');
 
         // Ambil isi keranjang + data produk
         $items = Keranjang::with('produk')
@@ -25,8 +26,15 @@ class PemesananController extends Controller
                              ->with('error', 'Keranjang masih kosong.');
         }
 
-        // Hitung total
-        $total = $items->sum(fn($item) => $item->produk->harga * $item->jumlah);
+        // Hitung total (sama seperti di keranjang: kontraktor dapat diskon 10% per item)
+        $total = 0;
+        foreach ($items as $item) {
+            $hargaSatuan = $item->produk->harga;
+            if ($role === 'kontraktor') {
+                $hargaSatuan = $hargaSatuan - ($hargaSatuan * 10 / 100);
+            }
+            $total += $hargaSatuan * $item->jumlah;
+        }
 
         return view('pemesanan.create', compact('items', 'total'));
     }
@@ -41,6 +49,7 @@ class PemesananController extends Controller
         ]);
 
         $user_id = session('user_id');
+        $role    = session('role');
 
         // Ambil isi keranjang
         $items = Keranjang::with('produk')
@@ -52,8 +61,15 @@ class PemesananController extends Controller
                              ->with('error', 'Keranjang sudah kosong.');
         }
 
-        // Hitung total
-        $total = $items->sum(fn($item) => $item->produk->harga * $item->jumlah);
+        // Hitung total (sama dengan perhitungan di keranjang & form checkout)
+        $total = 0;
+        foreach ($items as $item) {
+            $hargaSatuan = $item->produk->harga;
+            if ($role === 'kontraktor') {
+                $hargaSatuan = $hargaSatuan - ($hargaSatuan * 10 / 100);
+            }
+            $total += $hargaSatuan * $item->jumlah;
+        }
 
         // 1. Simpan ke tabel pemesanan
         // Setara: INSERT INTO pemesanan (user_id, nama, ...) VALUES (...)
@@ -69,12 +85,18 @@ class PemesananController extends Controller
 
         // 2. Simpan detail tiap produk + kurangi stok
         foreach ($items as $item) {
+            // Hitung harga satuan setelah diskon (sama seperti perhitungan total)
+            $hargaSatuan = $item->produk->harga;
+            if ($role === 'kontraktor') {
+                $hargaSatuan = $hargaSatuan - ($hargaSatuan * 10 / 100);
+            }
+
             // Setara: INSERT INTO detail_pemesanan (...) VALUES (...)
             DetailPemesanan::create([
                 'pemesanan_id' => $pemesanan->id,
                 'produk_id'    => $item->produk_id,
                 'jumlah'       => $item->jumlah,
-                'harga'        => $item->produk->harga,
+                'harga'        => $hargaSatuan,
             ]);
 
             // Kurangi stok produk

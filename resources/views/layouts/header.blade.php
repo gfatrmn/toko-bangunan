@@ -7,8 +7,9 @@
 
     <div class="d-flex align-items-center order-lg-3">
       @if(session('role') !== 'admin')
-        <a href="{{ route('keranjang.index') }}" class="nav-icon-link d-lg-none me-3">
+        <a href="{{ route('keranjang.index') }}" class="nav-icon-link d-lg-none me-3 position-relative">
           <i class="bi bi-cart3 fs-4"></i>
+          <span class="cart-count-badge" style="position:absolute;top:-4px;right:-10px;display:none;">0</span>
         </a>
       @endif
       <button class="navbar-toggler border-0 shadow-none" type="button"
@@ -63,17 +64,19 @@
             </li>
           @else
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle d-flex align-items-center user-profile-badge shadow-sm ms-lg-2 py-1 px-3"
+              <a class="nav-link dropdown-toggle d-flex align-items-center user-profile-badge shadow-sm ms-lg-2 py-1 px-3 position-relative"
                  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
                  style="border-radius: 25px; background: #fff; border: 1px solid rgba(0,0,0,0.08);">
                 <i class="bi bi-person-circle me-1 text-primary fs-6"></i>
                 <span class="fw-semibold text-dark" style="font-size:0.85rem;">{{ session('nama') }}</span>
+                <span class="cart-count-badge badge-notif" style="display:none;">0</span>
               </a>
               <ul class="dropdown-menu dropdown-menu-end border-0 rounded-bottom-2 py-1" style="width: 190px; font-size:0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 0 0 10px 10px !important;">
                 <li>
                   <a class="dropdown-item py-2 px-3 {{ request()->is('keranjang*') ? 'active' : '' }}"
                      href="{{ route('keranjang.index') }}">
                     <i class="bi bi-cart3 dropdown-icon"></i> Keranjang
+                    <span class="cart-count-badge" style="display:none;">0</span>
                   </a>
                 </li>
                 <li>
@@ -94,18 +97,16 @@
           @endif
 
         @else
-          <li class="nav-item d-none d-lg-block me-3">
-            <a href="{{ route('keranjang.index') }}" class="nav-icon-link px-3 border-end">
-              <i class="bi bi-cart3 fs-4"></i>
+          <li class="nav-item d-flex align-items-center gap-2 ms-lg-2">
+            <a href="{{ route('keranjang.index') }}" class="d-flex align-items-center text-decoration-none text-dark me-1">
+              <i class="bi bi-cart3 fs-5"></i>
             </a>
-          </li>
-          <li class="nav-item w-100 mt-2 mt-lg-0">
-            <div class="d-flex auth-buttons">
-              <a class="btn btn-primary fw-bold shadow-sm me-2" style="border-radius:25px; padding:0.375rem 1.25rem; font-size:0.85rem;"
-                 href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-1"></i>Masuk</a>
-              <a class="btn btn-outline-primary fw-bold shadow-sm" style="border-radius:25px; padding:0.375rem 1.25rem; font-size:0.85rem;"
-                 href="{{ route('register') }}"><i class="bi bi-person-plus me-1"></i>Daftar</a>
-            </div>
+            <a class="btn btn-primary fw-bold shadow-sm rounded-pill d-flex align-items-center py-1 px-3" style="font-size:0.85rem;" href="{{ route('login') }}">
+              <i class="bi bi-box-arrow-in-right me-1"></i>Masuk
+            </a>
+            <a class="btn btn-outline-primary fw-bold shadow-sm rounded-pill d-flex align-items-center py-1 px-3" style="font-size:0.85rem;" href="{{ route('register') }}">
+              <i class="bi bi-person-plus me-1"></i>Daftar
+            </a>
           </li>
         @endif
 

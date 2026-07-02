@@ -288,14 +288,6 @@
 @section('content')
 <div class="container py-4">
 
-  {{-- Flash message --}}
-  @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" style="border-radius:12px;border:none;background:#dcfce7;color:#16a34a;">
-      <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  @endif
-
   <div class="pd-hero p-3 p-md-4">
     <div class="row g-4 align-items-start">
 
@@ -362,18 +354,54 @@
         {{-- Aksi --}}
         @if($produk->stok > 0)
           @if(session('user_id'))
-            <form method="POST" action="{{ route('keranjang.tambah') }}" class="pd-cart-form">
+            <form id="form-add-cart" method="POST" action="{{ route('keranjang.tambah') }}" class="pd-cart-form">
               @csrf
               <input type="hidden" name="produk_id" value="{{ $produk->id }}">
               <div class="d-flex align-items-center gap-2">
                 <span style="font-size:0.85rem;font-weight:500;color:#475569;">Jumlah</span>
-                <input type="number" name="qty" class="pd-qty-input"
+                <input type="number" name="qty" id="cart-qty-input" class="pd-qty-input"
                        value="1" min="1" max="{{ $produk->stok }}">
               </div>
-              <button type="submit" class="pd-btn-cart">
+              <button type="submit" id="btn-add-cart" class="pd-btn-cart">
                 <i class="bi bi-cart-plus me-1"></i>Tambah ke Keranjang
               </button>
             </form>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              var form = document.getElementById('form-add-cart');
+              var btn = document.getElementById('btn-add-cart');
+              if (form) {
+                form.addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  if (btn.disabled) return;
+                  btn.disabled = true;
+                  btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Menambahkan...';
+                  var formData = new FormData(form);
+                  fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                  })
+                  .then(function(r) { return r.json(); })
+                  .then(function(data) {
+                    if (data.success) {
+                      showGlobalToast(data.message || 'Berhasil ditambahkan ke keranjang', 'bi bi-check-circle-fill text-primary');
+                      if (typeof updateCartBadge === 'function') updateCartBadge();
+                    } else {
+                      showGlobalToast(data.message || 'Gagal menambahkan', 'bi bi-exclamation-circle-fill text-danger');
+                    }
+                  })
+                  .catch(function() {
+                    showGlobalToast('Terjadi kesalahan', 'bi bi-exclamation-circle-fill text-danger');
+                  })
+                  .finally(function() {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-cart-plus me-1"></i>Tambah ke Keranjang';
+                  });
+                });
+              }
+            });
+            </script>
           @else
             <div class="pd-cart-form">
               <a href="{{ route('login') }}" class="pd-btn-login">

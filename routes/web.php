@@ -26,7 +26,8 @@ Route::middleware('auth.session')->group(function () {
     Route::get('/keranjang',             [KeranjangController::class, 'index'])->name('keranjang.index');
     Route::post('/keranjang/tambah',     [KeranjangController::class, 'tambah'])->name('keranjang.tambah');
     Route::post('/keranjang/update',     [KeranjangController::class, 'updateJumlah'])->name('keranjang.update');
-    Route::get('/keranjang/hapus/{id}',  [KeranjangController::class, 'hapus'])->name('keranjang.hapus');
+    Route::get('/keranjang/hapus/{id}', [KeranjangController::class, 'hapus'])->name('keranjang.hapus');
+    Route::get('/keranjang/count',       [KeranjangController::class, 'count'])->name('keranjang.count');
 
     // Pemesanan
     Route::get('/pemesanan/create',  [PemesananController::class, 'create'])->name('pemesanan.create');

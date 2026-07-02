@@ -40,7 +40,7 @@ class KeranjangController extends Controller
         ));
     }
 
-    // ─── Tambah produk ke keranjang ───────────────────────────
+    // ─── Tambah produk ke keranjang (AJAX) ───────────────────
     public function tambah(Request $request)
     {
         $user_id   = session('user_id');
@@ -61,6 +61,17 @@ class KeranjangController extends Controller
                 'user_id'   => $user_id,
                 'produk_id' => $produk_id,
                 'jumlah'    => min($qty, $produk->stok),
+            ]);
+        }
+
+        // Hitung total jumlah item (semua qty)
+        $totalItems = Keranjang::where('user_id', $user_id)->sum('jumlah');
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success'      => true,
+                'message'      => 'Produk ditambahkan ke keranjang!',
+                'total_items'  => $totalItems,
             ]);
         }
 
@@ -132,6 +143,17 @@ class KeranjangController extends Controller
             'grand_total'    => $grandTotal,
             'total_items'    => $totalItems,
         ]);
+    }
+
+    // ─── Hitung jumlah item (AJAX) ────────────────────────────
+    public function count()
+    {
+        $user_id = session('user_id');
+        $total   = 0;
+        if ($user_id) {
+            $total = Keranjang::where('user_id', $user_id)->sum('jumlah');
+        }
+        return response()->json(['total_items' => $total]);
     }
 
     // ─── Hapus item dari keranjang ─────────────────────────────
