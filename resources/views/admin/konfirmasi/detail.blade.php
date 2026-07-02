@@ -21,16 +21,18 @@
                 <span
                     class="badge-status {{ $pesanan->status_pembayaran == 'lunas' ? 'badge-lunas' : ($pesanan->status_pembayaran == 'pending' ? 'badge-pending' : 'badge-ditolak') }}">
                     @php
-                        $icon = match ($pesanan->status_pembayaran) {
-                            'lunas' => 'bi-check-circle-fill',
-                            'pending' => 'bi-clock-fill',
-                            'ditolak' => 'bi-x-circle-fill',
+                        $icon = match (true) {
+                            $pesanan->status_pembayaran == 'lunas' => 'bi-check-circle-fill',
+                            $pesanan->status_pembayaran == 'pending' && $pesanan->bukti_pembayaran => 'bi-clock-fill',
+                            $pesanan->status_pembayaran == 'pending' => 'bi-clock-fill',
+                            $pesanan->status_pembayaran == 'ditolak' => 'bi-x-circle-fill',
                             default => 'bi-question-circle-fill',
                         };
-                        $label = match ($pesanan->status_pembayaran) {
-                            'lunas' => 'LUNAS',
-                            'pending' => 'PENDING',
-                            'ditolak' => 'DITOLAK',
+                        $label = match (true) {
+                            $pesanan->status_pembayaran == 'lunas' => 'LUNAS',
+                            $pesanan->status_pembayaran == 'pending' && $pesanan->bukti_pembayaran => 'MENUNGGU KONFIRMASI',
+                            $pesanan->status_pembayaran == 'pending' => 'BELUM BAYAR',
+                            $pesanan->status_pembayaran == 'ditolak' => 'DITOLAK',
                             default => strtoupper($pesanan->status_pembayaran),
                         };
                     @endphp
@@ -262,7 +264,7 @@
         </div>
 
         {{-- Aksi Konfirmasi --}}
-        @if ($pesanan->status_pembayaran == 'pending')
+        @if ($pesanan->status_pembayaran == 'pending' && $pesanan->bukti_pembayaran)
             <div class="card-dashboard">
                 <div class="card-header">
                     <span><i class="bi bi-shield-check me-2" style="color:#2563eb;"></i> Aksi</span>

@@ -151,10 +151,11 @@
                                         'ditolak' => ['color' => '#991b1b', 'bg' => '#fee2e2', 'icon' => 'bi-x-circle-fill'],
                                         default => ['color' => '#64748b', 'bg' => '#f1f5f9', 'icon' => 'bi-question-circle-fill'],
                                     };
-                                    $statusLabel = match($p->status_pembayaran) {
-                                        'lunas' => 'Lunas',
-                                        'pending' => 'Menunggu',
-                                        'ditolak' => 'Ditolak',
+                                     $statusLabel = match(true) {
+                                        $p->status_pembayaran == 'lunas' => 'Lunas',
+                                        $p->status_pembayaran == 'pending' && $p->bukti_pembayaran => 'Menunggu Konfirmasi',
+                                        $p->status_pembayaran == 'pending' => 'Belum Bayar',
+                                        $p->status_pembayaran == 'ditolak' => 'Ditolak',
                                         default => $p->status_pembayaran,
                                     };
                                 @endphp
@@ -170,7 +171,7 @@
                             {{-- Aksi kotak icon --}}
                             <td style="padding:12px 14px;text-align:center;">
                                 <div class="d-flex gap-1 justify-content-center">
-                                    @if($p->status_pembayaran == 'pending')
+                                    @if($p->status_pembayaran == 'pending' && $p->bukti_pembayaran)
                                     <button type="button"
                                             onclick="konfirmasiTerima({{ $p->id }}, '{{ addslashes($p->nama) }}')"
                                             title="Terima Pembayaran"

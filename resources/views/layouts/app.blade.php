@@ -38,10 +38,11 @@
     .auth-buttons { display: flex; }
 
     /* Dropdown User Menu Styling */
-    .dropdown-item { transition: all 0.2s ease; }
+    .dropdown-item { transition: all 0.2s ease; display: flex; align-items: center; }
     .dropdown-item:hover { background-color: rgba(0, 74, 173, 0.06); }
     .dropdown-item.active { background: linear-gradient(135deg, #004aad, #0066f2) !important; color: #fff !important; }
     .dropdown-item.text-danger:hover { background-color: rgba(239, 68, 68, 0.08); }
+    .dropdown-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; margin-right: 10px; font-size: 0.9rem; }
     .user-profile-badge { cursor: pointer; }
     .user-profile-badge:hover { border-color: rgba(0, 74, 173, 0.3) !important; background: rgba(0, 74, 173, 0.03) !important; }
     .user-profile-badge::after { display: none !important; }

@@ -76,7 +76,7 @@ class AdminController extends Controller
         $pesanan = $query->paginate(10)->withQueryString();
 
         // Statistik untuk card info
-        $pendingCount = Pemesanan::where('status_pembayaran', 'pending')->count();
+        $pendingCount = Pemesanan::where('status_pembayaran', 'pending')->whereNotNull('bukti_pembayaran')->count();
         $lunasCount   = Pemesanan::where('status_pembayaran', 'lunas')->count();
         $ditolakCount = Pemesanan::where('status_pembayaran', 'ditolak')->count();
 

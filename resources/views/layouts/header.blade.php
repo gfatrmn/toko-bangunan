@@ -48,15 +48,17 @@
         @if(session('user_id'))
           @if(session('role') === 'admin')
             <li class="nav-item">
-              <a class="nav-link nav-custom-btn {{ request()->is('dashboard*') ? 'active' : '' }}"
-                 href="{{ route('admin.dashboard') }}">
-                <i class="bi bi-grid-1x2-fill me-2"></i>Dashboard
+              <a class="nav-link user-profile-badge shadow-sm ms-lg-1 py-1 px-3 d-flex align-items-center {{ request()->is('dashboard*') ? 'active' : '' }}"
+                 href="{{ route('admin.dashboard') }}"
+                 style="border-radius: 25px; background: #fff; border: 1px solid rgba(0,0,0,0.08); color: #212529; font-size:0.85rem;">
+                <i class="bi bi-grid-1x2-fill me-2 text-primary"></i>Dashboard
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link nav-custom-btn {{ request()->is('admin/konfirmasi*') ? 'active' : '' }}"
-                 href="{{ route('admin.konfirmasi') }}">
-                <i class="bi bi-check-all me-2"></i>Konfirmasi
+            <li class="nav-item ms-lg-1">
+              <a class="nav-link user-profile-badge shadow-sm ms-lg-1 py-1 px-3 d-flex align-items-center {{ request()->is('admin/konfirmasi*') ? 'active' : '' }}"
+                 href="{{ route('admin.konfirmasi') }}"
+                 style="border-radius: 25px; background: #fff; border: 1px solid rgba(0,0,0,0.08); color: #212529; font-size:0.85rem;">
+                <i class="bi bi-check-all me-2 text-primary"></i>Konfirmasi
               </a>
             </li>
           @else
@@ -67,26 +69,26 @@
                 <i class="bi bi-person-circle me-1 text-primary fs-6"></i>
                 <span class="fw-semibold text-dark" style="font-size:0.85rem;">{{ session('nama') }}</span>
               </a>
-              <ul class="dropdown-menu dropdown-menu-end border-0 rounded-bottom-2 py-1 mt-0 pt-0" style="min-width: 170px; font-size:0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 0 0 10px 10px !important;">
+              <ul class="dropdown-menu dropdown-menu-end border-0 rounded-bottom-2 py-1" style="width: 190px; font-size:0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 0 0 10px 10px !important;">
                 <li>
-                  <a class="dropdown-item py-1 px-3 {{ request()->is('keranjang*') ? 'active' : '' }}"
-                     href="{{ route('keranjang.index') }}" style="font-size:0.8rem;">
-                    <i class="bi bi-cart3 me-2"></i> Keranjang
+                  <a class="dropdown-item py-2 px-3 {{ request()->is('keranjang*') ? 'active' : '' }}"
+                     href="{{ route('keranjang.index') }}">
+                    <i class="bi bi-cart3 dropdown-icon"></i> Keranjang
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item py-1 px-3 {{ request()->is('riwayat*') ? 'active' : '' }}"
-                     href="{{ route('riwayat.index') }}" style="font-size:0.8rem;">
-                    <i class="bi bi-bag-check-fill me-2"></i> Pesanan
+                  <a class="dropdown-item py-2 px-3 {{ request()->is('riwayat*') ? 'active' : '' }}"
+                     href="{{ route('riwayat.index') }}">
+                    <i class="bi bi-bag-check-fill dropdown-icon"></i> Pesanan
                   </a>
                 </li>
                 <li><hr class="dropdown-divider my-0"></li>
                 <li>
-                  <a class="dropdown-item py-1 px-3 text-danger"
-                     href="{{ route('logout') }}" style="font-size:0.8rem;">
-                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                  <a class="dropdown-item py-2 px-3 text-danger"
+                     href="{{ route('logout') }}">
+                    <i class="bi bi-box-arrow-right dropdown-icon"></i> Logout
                   </a>
-                </li>
+                  </li>
               </ul>
             </li>
           @endif
@@ -99,10 +101,10 @@
           </li>
           <li class="nav-item w-100 mt-2 mt-lg-0">
             <div class="d-flex auth-buttons">
-              <a class="btn btn-primary fw-bold shadow-sm me-2" style="border-radius:10px"
-                 href="{{ route('login') }}">Masuk</a>
-              <a class="btn btn-outline-primary fw-bold shadow-sm" style="border-radius:10px"
-                 href="{{ route('register') }}">Daftar</a>
+              <a class="btn btn-primary fw-bold shadow-sm me-2" style="border-radius:25px; padding:0.375rem 1.25rem; font-size:0.85rem;"
+                 href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-1"></i>Masuk</a>
+              <a class="btn btn-outline-primary fw-bold shadow-sm" style="border-radius:25px; padding:0.375rem 1.25rem; font-size:0.85rem;"
+                 href="{{ route('register') }}"><i class="bi bi-person-plus me-1"></i>Daftar</a>
             </div>
           </li>
         @endif

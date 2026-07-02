@@ -38,32 +38,35 @@
   @endif
 
   <div class="row g-4">
-    {{-- Info Pesanan & Pengiriman --}}
+    {{-- Left Column: Status, Data Pengiriman, Bukti --}}
     <div class="col-lg-4">
+
       <div class="card border-0 shadow-sm rounded-4 mb-4 p-3">
         <h6 class="fw-bold border-bottom pb-2 mb-3">Status Pembayaran</h6>
         <div class="mb-2">
           @php
-            $statusLabel = match($pesanan->status_pembayaran) {
-              'pending' => 'Belum Bayar',
-              'lunas' => 'Lunas',
-              'ditolak' => 'Ditolak',
+            $statusLabel = match(true) {
+              $pesanan->status_pembayaran == 'pending' && $pesanan->bukti_pembayaran => 'Menunggu Konfirmasi',
+              $pesanan->status_pembayaran == 'pending' => 'Belum Bayar',
+              $pesanan->status_pembayaran == 'lunas' => 'Lunas',
+              $pesanan->status_pembayaran == 'ditolak' => 'Ditolak',
               default => $pesanan->status_pembayaran
             };
-            $statusClass = match($pesanan->status_pembayaran) {
-              'pending' => 'status-belum',
-              'lunas' => 'status-dibayar',
-              'ditolak' => 'status-ditolak',
+            $statusClass = match(true) {
+              $pesanan->status_pembayaran == 'pending' && $pesanan->bukti_pembayaran => 'status-menunggu',
+              $pesanan->status_pembayaran == 'pending' => 'status-belum',
+              $pesanan->status_pembayaran == 'lunas' => 'status-dibayar',
+              $pesanan->status_pembayaran == 'ditolak' => 'status-ditolak',
               default => 'status-belum'
             };
           @endphp
           <span class="status-badge {{ $statusClass }} d-inline-block w-100 text-center">{{ $statusLabel }}</span>
         </div>
-        @if($pesanan->status_pembayaran == 'pending')
-          <a href="{{ route('pembayaran.index', $pesanan->id) }}" class="btn btn-primary w-100 mt-2 py-2">
-            Bayar Sekarang
-          </a>
-        @endif
+      @if($pesanan->status_pembayaran == 'pending' && !$pesanan->bukti_pembayaran)
+        <a href="{{ route('pembayaran.index', $pesanan->id) }}" class="btn btn-primary w-100 mt-2 py-2">
+          Bayar Sekarang
+        </a>
+      @endif
       </div>
 
       <div class="card border-0 shadow-sm rounded-4 p-3">
@@ -77,9 +80,30 @@
         <p class="mb-1 text-muted small">Alamat Pengiriman</p>
         <p class="fw-medium mb-0">{{ $pesanan->alamat }}</p>
       </div>
+
+      @if($pesanan->bukti_pembayaran)
+      <div class="card border-0 shadow-sm rounded-4 p-3 mt-4">
+        <h6 class="fw-bold border-bottom pb-2 mb-3">Bukti Pembayaran</h6>
+        <div class="text-center">
+          <img src="{{ asset('uploads/' . $pesanan->bukti_pembayaran) }}"
+               alt="Bukti Pembayaran"
+               class="img-fluid rounded-3 shadow-sm"
+               style="max-height: 300px; cursor: pointer;"
+               onclick="window.open(this.src, '_blank')">
+          <p class="text-muted small mt-2 mb-0">Klik untuk memperbesar</p>
+        </div>
+        @if($pesanan->metode_pembayaran)
+        <div class="mt-2 text-center">
+          <span class="text-muted small">Metode Pembayaran:</span>
+          <span class="fw-medium">{{ $pesanan->metode_pembayaran }}</span>
+        </div>
+        @endif
+      </div>
+      @endif
+
     </div>
 
-    {{-- Daftar Produk --}}
+    {{-- Right Column: Rincian Produk --}}
     <div class="col-lg-8">
       <div class="card border-0 shadow-sm rounded-4 p-4">
         <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
@@ -127,6 +151,7 @@
         </div>
       </div>
     </div>
+
   </div>
 
 </div>

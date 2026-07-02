@@ -237,8 +237,20 @@
   }
 
   .empty-cart .btn {
-    padding: 0.6rem 2rem;
-    border-radius: 12px;
+    padding: 0.6rem 1.5rem;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    gap: 0.35rem;
+  }
+
+  .empty-cart .btn i {
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1;
   }
 
   /* ─── Order Summary ─── */
@@ -518,9 +530,9 @@
         <i class="bi bi-cart-x"></i>
         <h5>Keranjangmu Masih Kosong</h5>
         <p>Yuk, isi dengan kebutuhan bangunanmu sekarang!</p>
-        <a href="{{ route('home') }}" class="btn btn-primary">
-          <i class="bi bi-arrow-left me-2"></i>Mulai Belanja
-        </a>
+          <a href="{{ route('home') }}" class="btn btn-primary">
+            <i class="bi bi-arrow-left"></i> <span>Mulai Belanja</span>
+          </a>
       </div>
 
     @else
