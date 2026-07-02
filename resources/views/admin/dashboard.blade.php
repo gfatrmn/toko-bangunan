@@ -5,14 +5,16 @@
 
 @section('content')
     {{-- Statistik Cards --}}
-    <div class="row g-4 mb-4">
+    <div class="row g-3 mb-4">
         <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="0">
             <div class="stat-card">
                 <div class="stat-icon" style="background: #e0f2fe; color: #0369a1;">
                     <i class="bi bi-box-seam-fill"></i>
                 </div>
-                <h3>{{ $totalProduk }}</h3>
-                <p>Total Produk</p>
+                <div class="stat-info">
+                    <h3>{{ $totalProduk }}</h3>
+                    <p>Total Produk</p>
+                </div>
             </div>
         </div>
         <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
@@ -20,8 +22,10 @@
                 <div class="stat-icon" style="background: #dcfce7; color: #15803d;">
                     <i class="bi bi-cart-check-fill"></i>
                 </div>
-                <h3>{{ $totalPesanan }}</h3>
-                <p>Total Pesanan</p>
+                <div class="stat-info">
+                    <h3>{{ $totalPesanan }}</h3>
+                    <p>Total Pesanan</p>
+                </div>
             </div>
         </div>
         <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
@@ -29,8 +33,10 @@
                 <div class="stat-icon" style="background: #fef3c7; color: #a16207;">
                     <i class="bi bi-people-fill"></i>
                 </div>
-                <h3>{{ $totalUser }}</h3>
-                <p>Total Pengguna</p>
+                <div class="stat-info">
+                    <h3>{{ $totalUser }}</h3>
+                    <p>Total Pengguna</p>
+                </div>
             </div>
         </div>
         <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
@@ -38,8 +44,10 @@
                 <div class="stat-icon" style="background: #e0e7ff; color: #4338ca;">
                     <i class="bi bi-currency-dollar"></i>
                 </div>
-                <h3>Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</h3>
-                <p>Total Pendapatan</p>
+                <div class="stat-info">
+                    <h3><span class="currency">Rp</span>{{ number_format($totalPendapatan, 0, ',', '.') }}</h3>
+                    <p>Total Pendapatan</p>
+                </div>
             </div>
         </div>
     </div>

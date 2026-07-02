@@ -194,11 +194,12 @@
                             <tfoot
                                 style="background:#f8fafc;border-top:2px solid #e2e8f0;">
                                 <tr>
-                                    <td colspan="3" class="text-end fw-bold"
-                                        style="padding:10px 14px;font-size:0.85rem;">Total</td>
-                                    <td class="text-end fw-bold"
-                                        style="padding:10px 14px;font-size:1rem;color:#2563eb;">
-                                        Rp {{ number_format($pesanan->total, 0, ',', '.') }}
+                                    <td colspan="4" class="text-end fw-bold"
+                                        style="padding:12px 14px;">
+                                        <span style="font-size:0.85rem;color:#1e293b;">Total Belanja</span>
+                                        <span style="font-size:1.1rem;color:#2563eb;margin-left:20px;">
+                                            Rp {{ number_format($pesanan->total, 0, ',', '.') }}
+                                        </span>
                                     </td>
                                 </tr>
                             </tfoot>

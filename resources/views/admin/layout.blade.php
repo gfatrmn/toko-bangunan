@@ -141,28 +141,34 @@
         .stat-card {
             background: #fff;
             border-radius: 10px;
-            padding: 24px;
+            padding: 12px 16px;
             border: 1px solid rgba(0,0,0,0.04);
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
             transition: all 0.3s;
             height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         .stat-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 30px rgba(0,0,0,0.08);
         }
         .stat-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 16px;
+            font-size: 1.2rem;
+            margin-bottom: 0;
+            flex-shrink: 0;
         }
-        .stat-card h3 { font-size: 2rem; font-weight: 800; margin-bottom: 4px; }
-        .stat-card p { color: #64748b; font-size: 0.85rem; font-weight: 500; margin: 0; }
+        .stat-card .stat-info { flex: 1; }
+        .stat-card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 0; line-height: 1.2; display: flex; align-items: baseline; gap: 4px; }
+        .stat-card h3 .currency { font-size: 0.75rem; font-weight: 600; color: #64748b; }
+        .stat-card p { color: #64748b; font-size: 0.75rem; font-weight: 500; margin: 0; line-height: 1.3; }
 
         /* ─── Tables ─── */
         .card-dashboard {
@@ -231,7 +237,10 @@
             .main-content { margin-left: 0; }
             .sidebar-toggle { display: block; }
             .page-content { padding: 16px; }
-            .stat-card h3 { font-size: 1.6rem; }
+            .stat-card { padding: 10px 14px; gap: 10px; }
+            .stat-icon { width: 36px; height: 36px; font-size: 1rem; }
+            .stat-card h3 { font-size: 1.1rem; }
+            .stat-card p { font-size: 0.7rem; }
         }
     </style>
     @stack('styles')

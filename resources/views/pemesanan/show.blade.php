@@ -139,12 +139,16 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="3" class="text-end text-muted pt-3">Ongkos Kirim</td>
-                <td class="text-end text-success fw-medium pt-3">Gratis</td>
+                <td colspan="4" class="text-end pt-3 pb-1">
+                  <span class="text-muted" style="font-size:0.82rem;">Ongkos Kirim</span>
+                  <span class="text-success fw-medium ms-5" style="font-size:0.85rem;">Gratis</span>
+                </td>
               </tr>
               <tr>
-                <td colspan="3" class="text-end fw-bold fs-5 pt-2">Total Tagihan</td>
-                <td class="text-end fw-bold fs-5 text-primary pt-2">Rp{{ number_format($pesanan->total, 0, ',', '.') }}</td>
+                <td colspan="4" class="text-end pb-2">
+                  <span class="fw-bold" style="font-size:1rem;color:#1e293b;">Total Tagihan</span>
+                  <span class="fw-bold ms-4" style="font-size:1.2rem;color:#004aad;">Rp{{ number_format($pesanan->total, 0, ',', '.') }}</span>
+                </td>
               </tr>
             </tfoot>
           </table>
