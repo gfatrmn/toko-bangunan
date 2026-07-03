@@ -115,6 +115,7 @@
                     </thead>
                     <tbody>
                         @foreach($pesanan as $p)
+                        @php $bayar = $p->pembayaranTerakhir; @endphp
                         <tr style="border-bottom:1px solid #f1f5f9;transition:background 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
                             {{-- ID --}}
                             <td style="padding:12px 14px;">
@@ -131,10 +132,10 @@
                             {{-- Metode --}}
                             <td style="padding:12px 14px;">
                                 @php
-                                    $metodeLabel = match($p->metode_pembayaran) {
+                                    $metodeLabel = match($bayar?->metode) {
                                         'transfer' => ['label' => 'Transfer', 'icon' => 'bi-bank', 'color' => '#475569', 'bg' => '#f1f5f9'],
                                         'cod' => ['label' => 'COD', 'icon' => 'bi-cash-stack', 'color' => '#92400e', 'bg' => '#fef3c7'],
-                                        default => ['label' => $p->metode_pembayaran ?? '-', 'icon' => 'bi-credit-card', 'color' => '#475569', 'bg' => '#f1f5f9'],
+                                        default => ['label' => $bayar?->metode ?? '-', 'icon' => 'bi-credit-card', 'color' => '#475569', 'bg' => '#f1f5f9'],
                                     };
                                 @endphp
                                 <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:4px;font-size:0.75rem;font-weight:500;background:{{ $metodeLabel['bg'] }};color:{{ $metodeLabel['color'] }};">
@@ -153,7 +154,7 @@
                                     };
                                      $statusLabel = match(true) {
                                         $p->status_pembayaran == 'lunas' => 'Lunas',
-                                        $p->status_pembayaran == 'pending' && $p->bukti_pembayaran => 'Menunggu Konfirmasi',
+                                        $p->status_pembayaran == 'pending' && $bayar?->bukti_pembayaran => 'Menunggu Konfirmasi',
                                         $p->status_pembayaran == 'pending' => 'Belum Bayar',
                                         $p->status_pembayaran == 'ditolak' => 'Ditolak',
                                         default => $p->status_pembayaran,
@@ -171,7 +172,7 @@
                             {{-- Aksi kotak icon --}}
                             <td style="padding:12px 14px;text-align:center;">
                                 <div class="d-flex gap-1 justify-content-center">
-                                    @if($p->status_pembayaran == 'pending' && $p->bukti_pembayaran)
+                                    @if($p->status_pembayaran == 'pending' && $bayar?->bukti_pembayaran)
                                     <button type="button"
                                             onclick="konfirmasiTerima({{ $p->id }}, '{{ addslashes($p->nama) }}')"
                                             title="Terima Pembayaran"

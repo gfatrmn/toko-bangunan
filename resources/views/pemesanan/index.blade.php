@@ -49,41 +49,42 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach($pesanan as $p)
-                  <tr>
-                    <td class="ps-4 text-start fw-bold text-primary">#{{ $p->id }}</td>
-                    <td>{{ \Carbon\Carbon::parse($p->tanggal)->translatedFormat('d M Y, H:i') }}</td>
-                    <td class="fw-bold">Rp{{ number_format($p->total, 0, ',', '.') }}</td>
-                    <td>
-                      @php
-                        $statusLabel = match(true) {
-                          $p->status_pembayaran == 'pending' && $p->bukti_pembayaran => 'Menunggu Konfirmasi',
-                          $p->status_pembayaran == 'pending' => 'Belum Bayar',
-                          $p->status_pembayaran == 'lunas' => 'Lunas',
-                          $p->status_pembayaran == 'ditolak' => 'Ditolak',
-                          default => $p->status_pembayaran
-                        };
-                        $statusClass = match(true) {
-                          $p->status_pembayaran == 'pending' && $p->bukti_pembayaran => 'status-menunggu',
-                          $p->status_pembayaran == 'pending' => 'status-belum',
-                          $p->status_pembayaran == 'lunas' => 'status-dibayar',
-                          $p->status_pembayaran == 'ditolak' => 'status-ditolak',
-                          default => 'status-belum'
-                        };
-                      @endphp
-                      <span class="status-badge {{ $statusClass }}">{{ $statusLabel }}</span>
-                    </td>
-                    <td>
-                      <a href="{{ route('pemesanan.show', $p->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                        Detail
-                      </a>
-                      @if($p->status_pembayaran === 'pending' && !$p->bukti_pembayaran)
-                        <a href="{{ route('pembayaran.index', $p->id) }}" class="btn btn-sm btn-primary rounded-pill px-3 ms-1">
-                          Bayar
+                    @foreach($pesanan as $p)
+                    @php $bayarP = $p->pembayaranTerakhir; @endphp
+                    <tr>
+                      <td class="ps-4 text-start fw-bold text-primary">#{{ $p->id }}</td>
+                      <td>{{ \Carbon\Carbon::parse($p->tanggal)->translatedFormat('d M Y, H:i') }}</td>
+                      <td class="fw-bold">Rp{{ number_format($p->total, 0, ',', '.') }}</td>
+                      <td>
+                        @php
+                          $statusLabel = match(true) {
+                            $p->status_pembayaran == 'pending' && $bayarP?->bukti_pembayaran => 'Menunggu Konfirmasi',
+                            $p->status_pembayaran == 'pending' => 'Belum Bayar',
+                            $p->status_pembayaran == 'lunas' => 'Lunas',
+                            $p->status_pembayaran == 'ditolak' => 'Ditolak',
+                            default => $p->status_pembayaran
+                          };
+                          $statusClass = match(true) {
+                            $p->status_pembayaran == 'pending' && $bayarP?->bukti_pembayaran => 'status-menunggu',
+                            $p->status_pembayaran == 'pending' => 'status-belum',
+                            $p->status_pembayaran == 'lunas' => 'status-dibayar',
+                            $p->status_pembayaran == 'ditolak' => 'status-ditolak',
+                            default => 'status-belum'
+                          };
+                        @endphp
+                        <span class="status-badge {{ $statusClass }}">{{ $statusLabel }}</span>
+                      </td>
+                      <td>
+                        <a href="{{ route('pemesanan.show', $p->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                          Detail
                         </a>
-                      @endif
-                    </td>
-                  </tr>
+                        @if($p->status_pembayaran === 'pending' && !$bayarP?->bukti_pembayaran)
+                          <a href="{{ route('pembayaran.index', $p->id) }}" class="btn btn-sm btn-primary rounded-pill px-3 ms-1">
+                            Bayar
+                          </a>
+                        @endif
+                      </td>
+                    </tr>
                   @endforeach
                 </tbody>
               </table>

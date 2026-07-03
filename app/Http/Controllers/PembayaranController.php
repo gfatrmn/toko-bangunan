@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pemesanan;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -13,9 +14,9 @@ class PembayaranController extends Controller
     {
         $user_id = session('user_id');
 
-        // Pastikan pesanan milik user ini dan belum dibayar lunas
         $pesanan = Pemesanan::where('id', $id)
                             ->where('user_id', $user_id)
+                            ->with('pembayaran')
                             ->firstOrFail();
 
         return view('pembayaran.index', compact('pesanan'));
@@ -42,15 +43,19 @@ class PembayaranController extends Controller
         if ($request->hasFile('bukti_pembayaran')) {
             $file = $request->file('bukti_pembayaran');
 
-            // Bikin nama file unik (misal: bayar_5_1684920.jpg)
             $filename = 'bayar_' . $pesanan->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-
-            // Setara dengan move_uploaded_file() di PHP Native
             $file->move(public_path('uploads'), $filename);
 
-            // Update database
-            $pesanan->bukti_pembayaran  = $filename;
-            $pesanan->metode_pembayaran = $request->metode_pembayaran;
+            // Simpan ke tabel pembayaran (bukan ke pemesanan)
+            Pembayaran::create([
+                'pemesanan_id'     => $pesanan->id,
+                'jumlah'           => $pesanan->total,
+                'metode'           => $request->metode_pembayaran,
+                'status'           => 'pending',
+                'bukti_pembayaran' => $filename,
+            ]);
+
+            // Update status pesanan jadi pending (menunggu konfirmasi)
             $pesanan->status_pembayaran = 'pending';
             $pesanan->save();
         }

@@ -118,7 +118,8 @@ class PemesananController extends Controller
     {
         $user_id = session('user_id');
 
-        $pesanan = Pemesanan::where('user_id', $user_id)
+        $pesanan = Pemesanan::with('pembayaranTerakhir')
+                            ->where('user_id', $user_id)
                             ->orderBy('tanggal', 'desc')
                             ->get();
 
@@ -130,7 +131,7 @@ class PemesananController extends Controller
     {
         $user_id = session('user_id');
 
-        $pesanan = Pemesanan::with('details.produk')
+        $pesanan = Pemesanan::with(['details.produk', 'pembayaranTerakhir'])
                             ->where('id', $id)
                             ->where('user_id', $user_id)
                             ->firstOrFail();

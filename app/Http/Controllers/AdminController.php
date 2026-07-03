@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Produk;
 use App\Models\Pemesanan;
+use App\Models\Pembayaran;
 use App\Models\User;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class AdminController extends Controller
         $totalPendapatan = Pemesanan::where('status_pembayaran', 'lunas')->sum('total');
 
         // Pesanan terbaru (5 data)
-        $pesananTerbaru = Pemesanan::with('user')
+        $pesananTerbaru = Pemesanan::with('user', 'pembayaranSukses')
                             ->orderBy('created_at', 'desc')
                             ->take(5)
                             ->get();
@@ -54,7 +55,7 @@ class AdminController extends Controller
      */
     public function konfirmasi(Request $request)
     {
-        $query = Pemesanan::with('user')
+        $query = Pemesanan::with(['user', 'pembayaranTerakhir'])
                     ->orderByRaw("FIELD(status_pembayaran, 'pending', 'lunas', 'ditolak') ASC")
                     ->orderBy('created_at', 'desc');
 
@@ -75,8 +76,10 @@ class AdminController extends Controller
 
         $pesanan = $query->paginate(10)->withQueryString();
 
-        // Statistik untuk card info
-        $pendingCount = Pemesanan::where('status_pembayaran', 'pending')->whereNotNull('bukti_pembayaran')->count();
+        // Statistik untuk card info — pending dihitung dari ada pembayaran pending
+        $pendingCount = Pemesanan::where('status_pembayaran', 'pending')
+                        ->whereHas('pembayaran', fn($q) => $q->where('status', 'pending'))
+                        ->count();
         $lunasCount   = Pemesanan::where('status_pembayaran', 'lunas')->count();
         $ditolakCount = Pemesanan::where('status_pembayaran', 'ditolak')->count();
 
@@ -90,7 +93,7 @@ class AdminController extends Controller
      */
     public function detail($id)
     {
-        $pesanan = Pemesanan::with(['user', 'details.produk'])->findOrFail($id);
+        $pesanan = Pemesanan::with(['user', 'details.produk', 'pembayaran'])->findOrFail($id);
         return view('admin.konfirmasi.detail', compact('pesanan'));
     }
 
@@ -100,7 +103,7 @@ class AdminController extends Controller
      */
     public function terima($id)
     {
-        $pesanan = Pemesanan::with('details.produk')->findOrFail($id);
+        $pesanan = Pemesanan::with('details.produk', 'pembayaran')->findOrFail($id);
 
         if ($pesanan->status_pembayaran !== 'pending') {
             return redirect()->back()->with('error', 'Pesanan ini sudah diproses sebelumnya.');
@@ -116,6 +119,14 @@ class AdminController extends Controller
         }
 
         $pesanan->update(['status_pembayaran' => 'lunas']);
+
+        // Update pembayaran pending jadi sukses
+        Pembayaran::where('pemesanan_id', $pesanan->id)
+                  ->where('status', 'pending')
+                  ->update([
+                      'status'       => 'sukses',
+                      'dibayar_pada' => now(),
+                  ]);
 
         return redirect()->route('admin.konfirmasi')
             ->with('success', "Pesanan #{$pesanan->id} berhasil dikonfirmasi sebagai LUNAS. Stok telah diperbarui.");
@@ -136,10 +147,15 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Pesanan ini sudah diproses sebelumnya.');
         }
 
-        $pesanan->update([
-            'status_pembayaran' => 'ditolak',
-            'alasan_penolakan'  => $request->alasan_penolakan,
-        ]);
+        $pesanan->update(['status_pembayaran' => 'ditolak']);
+
+        // Update pembayaran pending jadi gagal
+        Pembayaran::where('pemesanan_id', $pesanan->id)
+                  ->where('status', 'pending')
+                  ->update([
+                      'status'           => 'gagal',
+                      'alasan_penolakan' => $request->alasan_penolakan,
+                  ]);
 
         return redirect()->route('admin.konfirmasi')
             ->with('success', "Pesanan #{$pesanan->id} telah ditolak.");

@@ -16,6 +16,9 @@
 @endpush
 
 @section('content')
+@php
+  $bayar = $pesanan->pembayaranTerakhir;
+@endphp
 <div class="container my-5">
 
   <div class="d-flex justify-content-between align-items-center mb-4">
@@ -27,12 +30,12 @@
     </a>
   </div>
 
-  @if($pesanan->status_pembayaran == 'ditolak' && $pesanan->alasan_penolakan)
+  @if($pesanan->status_pembayaran == 'ditolak' && $bayar?->alasan_penolakan)
   <div class="alert alert-danger d-flex align-items-start gap-2 mb-4">
     <i class="bi bi-x-octagon-fill mt-1"></i>
     <div>
       <strong>Pembayaran Ditolak</strong><br>
-      {{ $pesanan->alasan_penolakan }}
+      {{ $bayar->alasan_penolakan }}
     </div>
   </div>
   @endif
@@ -46,14 +49,14 @@
         <div class="mb-2">
           @php
             $statusLabel = match(true) {
-              $pesanan->status_pembayaran == 'pending' && $pesanan->bukti_pembayaran => 'Menunggu Konfirmasi',
+              $pesanan->status_pembayaran == 'pending' && $bayar?->bukti_pembayaran => 'Menunggu Konfirmasi',
               $pesanan->status_pembayaran == 'pending' => 'Belum Bayar',
               $pesanan->status_pembayaran == 'lunas' => 'Lunas',
               $pesanan->status_pembayaran == 'ditolak' => 'Ditolak',
               default => $pesanan->status_pembayaran
             };
             $statusClass = match(true) {
-              $pesanan->status_pembayaran == 'pending' && $pesanan->bukti_pembayaran => 'status-menunggu',
+              $pesanan->status_pembayaran == 'pending' && $bayar?->bukti_pembayaran => 'status-menunggu',
               $pesanan->status_pembayaran == 'pending' => 'status-belum',
               $pesanan->status_pembayaran == 'lunas' => 'status-dibayar',
               $pesanan->status_pembayaran == 'ditolak' => 'status-ditolak',
@@ -62,7 +65,7 @@
           @endphp
           <span class="status-badge {{ $statusClass }} d-inline-block w-100 text-center">{{ $statusLabel }}</span>
         </div>
-      @if($pesanan->status_pembayaran == 'pending' && !$pesanan->bukti_pembayaran)
+      @if($pesanan->status_pembayaran == 'pending' && !$bayar?->bukti_pembayaran)
         <a href="{{ route('pembayaran.index', $pesanan->id) }}" class="btn btn-primary w-100 mt-2 py-2">
           Bayar Sekarang
         </a>
@@ -81,21 +84,21 @@
         <p class="fw-medium mb-0">{{ $pesanan->alamat }}</p>
       </div>
 
-      @if($pesanan->bukti_pembayaran)
+      @if($bayar?->bukti_pembayaran)
       <div class="card border-0 shadow-sm rounded-4 p-3 mt-4">
         <h6 class="fw-bold border-bottom pb-2 mb-3">Bukti Pembayaran</h6>
         <div class="text-center">
-          <img src="{{ asset('uploads/' . $pesanan->bukti_pembayaran) }}"
+          <img src="{{ asset('uploads/' . $bayar->bukti_pembayaran) }}"
                alt="Bukti Pembayaran"
                class="img-fluid rounded-3 shadow-sm"
                style="max-height: 300px; cursor: pointer;"
                onclick="window.open(this.src, '_blank')">
           <p class="text-muted small mt-2 mb-0">Klik untuk memperbesar</p>
         </div>
-        @if($pesanan->metode_pembayaran)
+        @if($bayar->metode)
         <div class="mt-2 text-center">
           <span class="text-muted small">Metode Pembayaran:</span>
-          <span class="fw-medium">{{ $pesanan->metode_pembayaran }}</span>
+          <span class="fw-medium">{{ $bayar->metode }}</span>
         </div>
         @endif
       </div>

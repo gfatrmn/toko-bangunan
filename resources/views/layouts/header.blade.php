@@ -71,27 +71,27 @@
                 <span class="fw-semibold text-dark" style="font-size:0.85rem;">{{ session('nama') }}</span>
                 <span class="cart-count-badge badge-notif" style="display:none;">0</span>
               </a>
-              <ul class="dropdown-menu dropdown-menu-end border-0 rounded-bottom-2 py-1" style="width: 190px; font-size:0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 0 0 10px 10px !important;">
+              <ul class="dropdown-menu dropdown-menu-end border-0 rounded-bottom-2 py-1" style="width: 200px; font-size:0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 0 0 10px 10px !important;">
                 <li>
-                  <a class="dropdown-item py-2 px-3 {{ request()->is('keranjang*') ? 'active' : '' }}"
+                  <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2 {{ request()->is('keranjang*') ? 'active' : '' }}"
                      href="{{ route('keranjang.index') }}">
                     <i class="bi bi-cart3 dropdown-icon"></i> Keranjang
-                    <span class="cart-count-badge" style="display:none;">0</span>
+                    <span class="cart-count-badge ms-auto" style="display:none;">0</span>
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item py-2 px-3 {{ request()->is('riwayat*') ? 'active' : '' }}"
+                  <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2 {{ request()->is('riwayat*') ? 'active' : '' }}"
                      href="{{ route('riwayat.index') }}">
                     <i class="bi bi-bag-check-fill dropdown-icon"></i> Pesanan
                   </a>
                 </li>
                 <li><hr class="dropdown-divider my-0"></li>
                 <li>
-                  <a class="dropdown-item py-2 px-3 text-danger"
+                  <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2 text-danger"
                      href="{{ route('logout') }}">
                     <i class="bi bi-box-arrow-right dropdown-icon"></i> Logout
                   </a>
-                  </li>
+                </li>
               </ul>
             </li>
           @endif
