@@ -174,9 +174,8 @@
         .card-dashboard {
             background: #fff;
             border-radius: 10px;
-            border: 1px solid rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.05);
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-            overflow: hidden;
         }
         .card-dashboard .card-header {
             background: transparent;
@@ -264,14 +263,14 @@
             <a href="{{ route('admin.konfirmasi') }}" class="{{ request()->routeIs('admin.konfirmasi') ? 'active' : '' }}">
                 <i class="bi bi-check-circle-fill"></i> Konfirmasi
             </a>
-            <a href="#">
+            <a href="{{ route('admin.produk.index') }}" class="{{ request()->routeIs('admin.produk.*') ? 'active' : '' }}">
                 <i class="bi bi-box-seam-fill"></i> Produk
             </a>
-            <a href="#">
-                <i class="bi bi-people-fill"></i> Pengguna
+            <a href="{{ route('admin.kategori.index') }}" class="{{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}">
+                <i class="bi bi-tags-fill"></i> Kategori
             </a>
-            <a href="#">
-                <i class="bi bi-gear-fill"></i> Pengaturan
+            <a href="{{ route('admin.user.index') }}" class="{{ request()->routeIs('admin.user.*') ? 'active' : '' }}">
+                <i class="bi bi-people-fill"></i> Pengguna
             </a>
             <div class="menu-label" style="margin-top:12px;">Akun</div>
             <a href="{{ route('home') }}">

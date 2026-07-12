@@ -44,8 +44,31 @@ Route::middleware('auth.session')->group(function () {
 // ─── Admin (wajib login & role admin) ─────────────────────────
 Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard',   [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/konfirmasi',           [App\Http\Controllers\AdminController::class, 'konfirmasi'])->name('konfirmasi');
-    Route::get('/konfirmasi/detail/{id}', [App\Http\Controllers\AdminController::class, 'detail'])->name('konfirmasi.detail');
-    Route::post('/konfirmasi/terima/{id}', [App\Http\Controllers\AdminController::class, 'terima'])->name('konfirmasi.terima');
-    Route::post('/konfirmasi/tolak/{id}',  [App\Http\Controllers\AdminController::class, 'tolak'])->name('konfirmasi.tolak');
+
+    // Konfirmasi Pesanan
+    Route::get('/konfirmasi',               [App\Http\Controllers\AdminController::class, 'konfirmasi'])->name('konfirmasi');
+    Route::get('/konfirmasi/detail/{id}',   [App\Http\Controllers\AdminController::class, 'detailPesanan'])->name('konfirmasi.detail');
+    Route::post('/konfirmasi/terima/{id}',  [App\Http\Controllers\AdminController::class, 'terima'])->name('konfirmasi.terima');
+    Route::post('/konfirmasi/tolak/{id}',   [App\Http\Controllers\AdminController::class, 'tolak'])->name('konfirmasi.tolak');
+
+    // CRUD Produk
+    Route::get('/produk',                   [App\Http\Controllers\AdminController::class, 'produkIndex'])->name('produk.index');
+    Route::post('/produk',                  [App\Http\Controllers\AdminController::class, 'produkStore'])->name('produk.store');
+    Route::get('/produk/{id}/show',         [App\Http\Controllers\AdminController::class, 'produkShow'])->name('produk.show');
+    Route::put('/produk/{id}',              [App\Http\Controllers\AdminController::class, 'produkUpdate'])->name('produk.update');
+    Route::delete('/produk/{id}',           [App\Http\Controllers\AdminController::class, 'produkDestroy'])->name('produk.destroy');
+
+    // CRUD Kategori
+    Route::get('/kategori',                 [App\Http\Controllers\AdminController::class, 'kategoriIndex'])->name('kategori.index');
+    Route::post('/kategori',                [App\Http\Controllers\AdminController::class, 'kategoriStore'])->name('kategori.store');
+    Route::put('/kategori/{id}',            [App\Http\Controllers\AdminController::class, 'kategoriUpdate'])->name('kategori.update');
+    Route::delete('/kategori/{id}',         [App\Http\Controllers\AdminController::class, 'kategoriDestroy'])->name('kategori.destroy');
+
+    // CRUD User
+    Route::get('/user',                     [App\Http\Controllers\AdminController::class, 'userIndex'])->name('user.index');
+    Route::get('/user/create',              [App\Http\Controllers\AdminController::class, 'userCreate'])->name('user.create');
+    Route::post('/user',                    [App\Http\Controllers\AdminController::class, 'userStore'])->name('user.store');
+    Route::get('/user/{id}/edit',           [App\Http\Controllers\AdminController::class, 'userEdit'])->name('user.edit');
+    Route::put('/user/{id}',                [App\Http\Controllers\AdminController::class, 'userUpdate'])->name('user.update');
+    Route::delete('/user/{id}',             [App\Http\Controllers\AdminController::class, 'userDestroy'])->name('user.destroy');
 });
